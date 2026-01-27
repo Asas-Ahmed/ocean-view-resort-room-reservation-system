@@ -24,3 +24,21 @@ hs_err_pid*
 replay_pid*
 /target/
 /bin/
+
+# Eclipse specific files
+.metadata
+.settings/
+.project
+.classpath
+.factorypath
+
+# JavaScript development tools
+.jsdtscope
+
+# Maven
+target/
+bin/
+
+# OS generated files
+Thumbs.db
+.DS_Store
