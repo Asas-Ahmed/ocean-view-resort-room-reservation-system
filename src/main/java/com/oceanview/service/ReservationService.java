@@ -33,9 +33,7 @@ public class ReservationService {
 
     public boolean addReservation(Reservation r) { 
         // Logic: Basic validation before sending to DB
-        if (r == null || r.getGuestName() == null || r.getGuestName().trim().isEmpty()) {
-            return false;
-        }
+    	validateReservation(r);
         return reservationDAO.addReservation(r); 
     }
 
@@ -49,5 +47,19 @@ public class ReservationService {
 
     public boolean updateReservation(Reservation r) { 
         return reservationDAO.updateReservation(r); 
+    }
+    
+    private void validateReservation(Reservation r) {
+        if (r == null)
+            throw new IllegalArgumentException("Reservation is null");
+
+        if (r.getGuestName() == null || r.getGuestName().isBlank())
+            throw new IllegalArgumentException("Guest name required");
+
+        if (!r.getContactNumber().matches("\\d{10}"))
+            throw new IllegalArgumentException("Invalid contact number");
+
+        if (!r.getCheckOutDate().after(r.getCheckInDate()))
+            throw new IllegalArgumentException("Invalid date range");
     }
 }

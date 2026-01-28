@@ -34,3 +34,4 @@ VALUES ('Sarah Jennings', '45 Ocean View, Mirissa', '0719876543', 'Deluxe', '202
 
 -- Verify
 SELECT * FROM users;
+SELECT * FROM reservations;

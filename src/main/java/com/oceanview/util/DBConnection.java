@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 public class DBConnection {
     private static DBConnection instance;
+    // Singleton connection; use HikariCP for production pooling.
     private Connection connection;
     
     private final String URL = "jdbc:mysql://localhost:3306/ocean_view_resort_db";

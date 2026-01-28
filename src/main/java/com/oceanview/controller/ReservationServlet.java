@@ -50,7 +50,7 @@ public class ReservationServlet extends HttpServlet {
                 Reservation reservation = new Reservation(guestName, address, contactNumber, roomType, checkInDate, checkOutDate);
                 boolean success = reservationService.addReservation(reservation);
                 if (success) {
-                    resp.sendRedirect("system/dashboard.jsp?msg=Reservation+added+successfully");
+                    resp.sendRedirect(req.getContextPath() + "/system/dashboard.jsp?msg=Reservation+added+successfully");
                 } else {
                     req.setAttribute("error", "Failed to save to database.");
                     req.getRequestDispatcher("reservations/add.jsp").forward(req, resp);
@@ -58,7 +58,15 @@ public class ReservationServlet extends HttpServlet {
             }
         } catch (Exception e) {
             req.setAttribute("error", "Input Error: " + e.getMessage());
-            req.getRequestDispatcher("reservations/add.jsp").forward(req, resp);
+            String action = req.getParameter("action");
+            
+            if ("update".equals(action)) {
+                // If update fails, we need to stay on edit page
+                req.getRequestDispatcher("reservations/edit.jsp").forward(req, resp);
+            } else {
+                // If add fails, stay on add page
+                req.getRequestDispatcher("reservations/add.jsp").forward(req, resp);
+            }
         }
     }
 

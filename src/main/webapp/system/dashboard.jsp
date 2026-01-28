@@ -64,12 +64,14 @@
 	        <p>Quickly retrieve detailed booking information using a unique Reservation ID.</p>
 	    </div>
 	    
-	    <div class="card" onclick="location.href='../dbtest';" style="cursor: pointer;">
-	        <h3>⚙️ System Status</h3>
-	        <p>Monitor real-time database connectivity and core server performance.</p>
-	    </div>
+	    <c:if test="${not empty sessionScope.user and sessionScope.user.role == 'ADMIN'}">
+		    <div class="card" onclick="location.href='../dbtest';" style="cursor: pointer;">
+		        <h3>⚙️ System Status</h3>
+		        <p>Monitor real-time database connectivity and core server performance.</p>
+		    </div>
+	    </c:if>
 	    
-	    <c:if test="${sessionScope.user.role == 'ADMIN'}">
+	    <c:if test="${not empty sessionScope.user and sessionScope.user.role == 'ADMIN'}">
 		    <div class="card" onclick="location.href='../admin/users';" style="border-color: #ffd700; cursor: pointer;">
 		        <h3>👥 Manage Staff</h3>
 		        <p>Add, remove, or change passwords for resort staff.</p>

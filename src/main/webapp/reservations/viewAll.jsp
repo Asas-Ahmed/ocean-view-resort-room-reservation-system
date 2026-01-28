@@ -57,7 +57,7 @@
                         <a href="${pageContext.request.contextPath}/bill?reservationId=${res.reservationId}" class="btn btn-bill">📄 Invoice</a>
                         
                         <%-- Admin Only Actions --%>
-                        <c:if test="${sessionScope.user.role == 'ADMIN'}">
+                        <c:if test="${not empty sessionScope.user and sessionScope.user.role == 'ADMIN'}">
                             <a href="${pageContext.request.contextPath}/reservation?action=edit&id=${res.reservationId}" class="btn btn-edit">✏️ Edit</a>
                             <a href="${pageContext.request.contextPath}/reservation?action=delete&id=${res.reservationId}" 
                                class="btn btn-delete" 

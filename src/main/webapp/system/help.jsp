@@ -32,7 +32,7 @@
                 <li><strong>Contact Number:</strong> Must be exactly 10 digits.</li>
                 <li><strong>Dates:</strong> Check-out must be at least one day after Check-in.</li>
             </ul>
-            <c:if test="${sessionScope.user.role == 'ADMIN'}">
+            <c:if test="${not empty sessionScope.user and sessionScope.user.role == 'ADMIN'}">
                 <div class="admin-note">
                     <strong>Admin Tip:</strong> You can <strong>Edit</strong> guest details or <strong>Delete</strong> cancelled bookings directly from the 'View Reservations' list.
                 </div>
@@ -64,7 +64,7 @@
             <p>If the system feels slow or data isn't loading, click <strong>'System Status'</strong> on the dashboard to verify the connection between the application and the Database Server.</p>
         </div>
 
-        <c:if test="${sessionScope.user.role == 'ADMIN'}">
+        <c:if test="${not empty sessionScope.user and sessionScope.user.role == 'ADMIN'}">
             <div class="step">
                 <h3>5. Staff Management (Admin Only)</h3>
                 <p>Access <strong>'Manage Staff'</strong> to create or remove user accounts. Current staff cannot delete their own active accounts for security reasons.</p>

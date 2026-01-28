@@ -46,26 +46,25 @@ public class AdminUserServlet extends HttpServlet {
         req.getRequestDispatcher("/admin/manageUsers.jsp").forward(req, resp);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (!isAdmin(req)) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
+    @Override 
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { 
+        if (!isAdmin(req)) { 
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN); 
+            return; 
+        } 
+        
+        String action = req.getParameter("action"); 
+        String u = req.getParameter("newUsername"); 
+        String p = req.getParameter("newPassword"); 
+        String r = req.getParameter("newRole"); 
 
-        String action = req.getParameter("action");
-        String u = req.getParameter("newUsername");
-        String p = req.getParameter("newPassword");
-        String r = req.getParameter("newRole");
-
-        boolean success;
-        if ("update".equals(action)) {
-            userDAO.updateUser(u, p, r); // Password 'p' will be hashed inside DAO
-            resp.sendRedirect("users?msg=User+Updated");
-        } else {
-            userDAO.addUser(new User(u, p, r));
-            resp.sendRedirect("users?msg=User+Added");
-        }
+        if ("update".equals(action)) { 
+            userDAO.updateUser(u, p, r); 
+            resp.sendRedirect("users?msg=User+Updated"); 
+        } else { 
+            userDAO.addUser(new User(u, p, r)); 
+            resp.sendRedirect("users?msg=User+Added"); 
+        } 
     }
 
     private boolean isAdmin(HttpServletRequest req) {
