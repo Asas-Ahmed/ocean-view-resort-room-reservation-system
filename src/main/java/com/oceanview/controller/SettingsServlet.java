@@ -17,21 +17,20 @@ public class SettingsServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        
+    try {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
-        // Verify it is an Admin changing the settings
         if (user != null && "ADMIN".equals(user.getRole())) {
-            try {
-                int newCapacity = Integer.parseInt(request.getParameter("newCapacity"));
+            String capacityRaw = request.getParameter("newCapacity");
+            if (capacityRaw != null) {
+                int newCapacity = Integer.parseInt(capacityRaw);
                 settingsDAO.setTotalCapacity(newCapacity);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
             }
         }
-        
-        // Redirect back to the dashboard to see the new numbers
         response.sendRedirect(request.getContextPath() + "/system/dashboard");
+    } catch (Exception e) {
+        throw new ServletException("Failed to update system settings", e);
     }
+}
 }

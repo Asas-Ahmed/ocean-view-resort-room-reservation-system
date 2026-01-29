@@ -27,25 +27,24 @@ public class ReservationService {
     }
 
     // CRUD operations delegating to the DAO
-    public Reservation getReservationById(int id) { 
+    public Reservation getReservationById(int id) throws Exception { 
         return reservationDAO.getReservationById(id); 
     }
 
-    public boolean addReservation(Reservation r) { 
-        // Logic: Basic validation before sending to DB
-    	validateReservation(r);
+    public boolean addReservation(Reservation r) throws Exception { 
+        validateReservation(r);
         return reservationDAO.addReservation(r); 
     }
 
-    public List<Reservation> getAllReservations() { 
+    public List<Reservation> getAllReservations() throws Exception { 
         return reservationDAO.getAllReservations(); 
     }
 
-    public boolean deleteReservation(int id) { 
+    public boolean deleteReservation(int id) throws Exception { 
         return reservationDAO.deleteReservation(id); 
     }
 
-    public boolean updateReservation(Reservation r) { 
+    public boolean updateReservation(Reservation r) throws Exception { 
         return reservationDAO.updateReservation(r); 
     }
     

@@ -39,24 +39,49 @@ html, body {
 #page-loader {
     position: fixed;
     inset: 0;
-    background: var(--bg-main);
     z-index: 99999;
-    display: flex;
+    display: flex; 
     align-items: center;
     justify-content: center;
-    transition: opacity 0.3s ease-out, visibility 0.3s;
+    background: rgba(15, 23, 42, 0.1); 
+    backdrop-filter: blur(15px) saturate(200%) brightness(1.0);
+    -webkit-backdrop-filter: blur(15px) saturate(200%) brightness(1.0);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+    transition: 
+        opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+        transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0.2s;
 }
 
-/* Modern Dual-Ring Spinner */
+#page-loader.loader-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(1.05);
+}
+
 .loader-spinner {
-    width: 48px;
-    height: 48px;
-    border: 3px solid var(--border-soft);
-    border-bottom-color: var(--brand-primary);
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top: 3px solid #38bdf8; 
     border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 0.8s linear infinite;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    animation: rotation 1s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite;
+}
+
+/* Content Entrance Animation */
+body:not(.is-loading) .login-split-container, 
+body:not(.is-loading) .dashboard-content {
+    animation: fadeInContent 0.4s ease-out forwards;
+}
+
+@keyframes fadeInContent {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes rotation {
@@ -64,11 +89,82 @@ html, body {
     100% { transform: rotate(360deg); }
 }
 
-/* The state when the page is ready */
-.loader-hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+/* --- Modern Error Page System --- */
+.error-page-wrapper {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0f172a;
+    background-image: 
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.1), transparent 40%),
+        radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.1), transparent 40%);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.error-glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 3rem;
+    border-radius: 24px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.error-code-hero {
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 1rem;
+    background: var(--brand-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));
+}
+
+.error-title {
+    font-size: 1.8rem;
+    color: #f8fafc;
+    margin-bottom: 1rem;
+}
+
+.error-desc {
+    color: #94a3b8;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* --- Modern Secondary Button for Error Pages --- */
+.error-actions .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.error-actions .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.error-actions .btn-secondary:active {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.02);
 }
 
 /* --- Confirmation Overlay --- */
@@ -275,7 +371,7 @@ html, body {
 
 .nav-links a:hover { color: white; }
 
-/* --- Modern Split-Screen Login --- */
+/* --- Optimized Modern Split-Screen Login --- */
 .login-page-body {
     height: 100vh;
     display: flex;
@@ -283,8 +379,8 @@ html, body {
     justify-content: center;
     background-color: #0f172a;
     background-image: 
-        radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.15) 0px, transparent 50%), 
-        radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.15) 0px, transparent 50%);
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 40%),
+        radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.08), transparent 40%);
     overflow: hidden;
     position: relative;
 }
@@ -293,34 +389,42 @@ html, body {
     display: flex;
     width: 1000px;
     height: 620px;
-    background: rgba(255, 255, 255, 0.98);
+    background: #ffffff; 
     border-radius: 24px;
-    box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.4);
     overflow: hidden;
     z-index: 1;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    will-change: opacity, transform;
+    animation: fadeIn 0.4s ease-out;
 }
 
 .login-page-body::before,
 .login-page-body::after {
     content: '';
     position: absolute;
-    width: 400px; height: 400px;
+    width: 500px; height: 500px;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.2;
     z-index: 0;
+    pointer-events: none;
 }
-.login-page-body::before { background: var(--brand-primary); top: 10%; left: 15%; }
-.login-page-body::after { background: #0ea5e9; bottom: 10%; right: 15%; }
+
+.login-page-body::before { 
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.15) 0%, transparent 70%); 
+    top: 5%; left: 10%; 
+}
+.login-page-body::after { 
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%); 
+    bottom: 5%; right: 10%; 
+}
 
 /* Left Side: Visual/Branding */
 .login-visual {
     flex: 1.2;
-    background: var(--bg-sidebar);
+    background-color: #0f172a;
     background-image: 
-        linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)),
-        url('../images/loginBg.jfif');
+        linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)),
+        url('../images/loginBg.webp');
     background-size: cover;
     background-position: center;
     padding: 3rem;
@@ -382,13 +486,14 @@ html, body {
     border-radius: var(--radius-md);
     background: #fcfdfe;
     font-size: 0.95rem;
-    transition: all 0.2s;
+    transition: border-color 0.1s ease-out;
 }
 
 .form-group input:focus {
     outline: none;
     border-color: var(--brand-primary);
-    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    box-shadow: none; 
+    outline: 2px solid rgba(79, 70, 229, 0.2);
 }
 
 /* Error Message Style */
@@ -400,6 +505,17 @@ html, body {
     font-size: 0.85rem;
     margin-bottom: 1.5rem;
     border-left: 4px solid #dc2626;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
 /* Responsive Login */
@@ -1084,14 +1200,6 @@ input[name="newCapacity"]:focus {
 
 .form-group {
     margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-heading);
-    margin-bottom: 0.5rem;
 }
 
 .form-group input, 

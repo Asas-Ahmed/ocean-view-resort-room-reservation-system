@@ -7,11 +7,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/system/*", "/admin/*", "/dashboard"})
+@WebFilter(urlPatterns = {
+	    "/system/*", 
+	    "/admin/*", 
+	    "/dashboard", 
+	    "/reservations/*", 
+	    "/billing/*", 
+	    "/reservation",
+	    "/bill",
+	    "/settings"
+})
 public class AuthFilter implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
+    	
 
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
@@ -24,6 +34,7 @@ public class AuthFilter implements Filter {
         String loginServlet = request.getContextPath() + "/login";
         String helpURI = request.getContextPath() + "/system/help.jsp";
         String resourcePath = request.getContextPath() + "/resources/";
+        String errorPath = request.getContextPath() + "/errors/";
 
         // Check if user is logged in
         boolean loggedIn = (session != null && session.getAttribute("user") != null);
@@ -33,11 +44,25 @@ public class AuthFilter implements Filter {
         boolean isHelpRequest = requestURI.equals(helpURI);
         boolean isResourceRequest = requestURI.startsWith(resourcePath);
         boolean isSettingsRequest = requestURI.equals(request.getContextPath() + "/system/settings");
+        boolean isErrorRequest = requestURI.startsWith(errorPath);
 
-        if (loggedIn || isLoginRequest || isHelpRequest || isResourceRequest || isSettingsRequest) {
+        if (loggedIn) {
+            com.oceanview.model.User user = (com.oceanview.model.User) session.getAttribute("user");
+
+            // Check if a non-admin is trying to access the /admin/ folder
+            if (requestURI.contains("/admin/") && !"admin".equalsIgnoreCase(user.getRole())) {
+                response.sendError(403); // This shows 403.jsp
+                return; 
+            }
+            
+            // If they are admin, or just visiting regular pages, let them through
+            chain.doFilter(req, res);
+
+        } else if (isLoginRequest || isHelpRequest || isResourceRequest || isSettingsRequest || isErrorRequest) {
+            // If not logged in, but visiting a "Public" page, let them through
             chain.doFilter(req, res);
         } else {
-            // Redirect to login
+            // Not logged in and trying to see private stuff? Go to login.
             response.sendRedirect(loginURI);
         }
     }

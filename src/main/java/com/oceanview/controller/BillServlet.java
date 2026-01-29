@@ -38,16 +38,17 @@ public class BillServlet extends HttpServlet {
 
             if (res != null) {
                 double total = reservationService.calculateBill(res);
-                
                 request.setAttribute("reservation", res);
                 request.setAttribute("totalBill", total);
-
                 request.getRequestDispatcher("/billing/invoice.jsp").forward(request, response);
             } else {
-            	response.sendRedirect(request.getContextPath() + "/reservations/search.jsp?error=NotFound");
+                response.sendRedirect(request.getContextPath() + "/reservations/search.jsp?error=NotFound");
             }
         } catch (NumberFormatException e) {
             response.sendRedirect("search.jsp?error=InvalidFormat");
+        } catch (Exception e) {
+            // Triggers 500.jsp for Database issues
+            throw new ServletException("Error generating bill", e);
         }
     }
 }

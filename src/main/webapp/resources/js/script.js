@@ -6,42 +6,100 @@
 (function() {
     const loader = document.getElementById("page-loader");
 
-    // Hide loader when DOM is fully interactive
-    window.addEventListener("load", () => {
-        requestAnimationFrame(() => {
+    function showLoader() {
+        if (!loader) return;
+        document.documentElement.classList.add('is-loading');
+        loader.classList.remove("loader-hidden");
+    }
+
+    function hideLoaderSmoothly() {
+        if (!loader) return;
+        setTimeout(() => {
             loader.classList.add("loader-hidden");
-        });
+            document.documentElement.classList.remove('is-loading');
+        }, 50); 
+    }
+
+    // BFCache Handling
+    window.addEventListener("pageshow", (event) => {
+        showLoader(); 
+        hideLoaderSmoothly();
     });
 
-    // Show loader on click of links
+    window.addEventListener("pagehide", () => {
+        showLoader();
+    });
+
+    // Navigation Handling
+	document.addEventListener("click", (e) => {
+	    const link = e.target.closest("a");
+	    if (!link || !link.href) return;
+
+	    const url = new URL(link.href, window.location.href);
+
+	    const isSamePage = url.pathname === window.location.pathname;
+	    const isSameHash = url.hash === window.location.hash;
+
+	    // Ignore same-page hash clicks (including "#")
+	    if (isSamePage && (url.hash || link.getAttribute("href") === "#") && isSameHash) {
+	        hideLoaderSmoothly();
+	        return;
+	    }
+
+	    // Normal navigation
+	    if (
+	        link.hostname === window.location.hostname &&
+	        !url.hash &&
+	        !isSamePage &&
+	        link.target !== "_blank"
+	    ) {
+	        showLoader();
+	    }
+	});
+
+
+    // "Back" button click (popstate)
+    window.addEventListener("popstate", () => {
+        showLoader();
+    });
+
+    window.addEventListener("hashchange", () => {
+        // Don't show loader for internal # anchors
+        loader.classList.add("loader-hidden");
+    });
+
+    // INTERACTION
     document.addEventListener("click", (e) => {
         const link = e.target.closest("a");
-        
-        if (link && 
-            link.href && 
-            !link.href.includes("#") && 
-            !link.href.startsWith("javascript:") &&
-            link.target !== "_blank") {
-            loader.classList.remove("loader-hidden");
+        if (link && link.href) {
+            try {
+                const url = new URL(link.href);
+                const isSamePage = url.pathname === window.location.pathname;
+                
+                if (link.hostname === window.location.hostname && 
+                    !link.hash && 
+                    !isSamePage &&
+                    link.target !== "_blank") {
+                    
+                    prepareForNextPage();
+                    showLoader();
+                }
+            } catch (err) {}
         }
     });
 
-    // Show loader when reserving/saving/deleting via forms
-    document.addEventListener("submit", (e) => {
-        if (!e.defaultPrevented) {
-            loader.classList.remove("loader-hidden");
-        }
+    // This ensures that ANY exit (refresh, back button, etc.) sets the flag
+    window.addEventListener("pagehide", () => {
+        prepareForNextPage();
     });
 
-    // Fix for Browser Back Button (BFCache)
-    window.addEventListener("pageshow", (event) => {
-        if (event.persisted) {
-            loader.classList.add("loader-hidden");
-        }
+    document.addEventListener("submit", () => {
+        prepareForNextPage();
+        showLoader();
     });
 })();
 
-// --- Updated Modal Functions (Triggers Loader on Confirm) ---
+// --- Modal Functions (Triggers Loader on Confirm) ---
 function showDeleteModal(guestName, deleteUrl) {
     const span = document.getElementById('guestNameSpan');
     const btn = document.getElementById('confirmDeleteBtn');

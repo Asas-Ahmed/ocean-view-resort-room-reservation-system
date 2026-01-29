@@ -23,48 +23,56 @@ public class AdminUserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (!isAdmin(req)) {
-            resp.sendRedirect(req.getContextPath() + "/auth/login.jsp");
-            return;
+        try {
+            if (!isAdmin(req)) {
+                resp.sendRedirect(req.getContextPath() + "/auth/login.jsp");
+                return;
+            }
+
+            String action = req.getParameter("action");
+            String username = req.getParameter("username");
+
+            if ("edit".equals(action) && username != null) {
+                User u = userDAO.getUserByUsername(username);
+                req.setAttribute("editUser", u);
+            } 
+            else if ("delete".equals(action) && username != null) {
+                userDAO.deleteUser(username);
+                resp.sendRedirect("users?msg=User+Removed");
+                return;
+            }
+
+            List<User> userList = userDAO.getAllUsers();
+            req.setAttribute("userList", userList);
+            req.getRequestDispatcher("/admin/manageUsers.jsp").forward(req, resp);
+        } catch (Exception e) {
+            throw new ServletException("Admin User Operation Failed", e);
         }
-
-        String action = req.getParameter("action");
-        String username = req.getParameter("username");
-
-        if ("edit".equals(action) && username != null) {
-            User u = userDAO.getUserByUsername(username);
-            req.setAttribute("editUser", u);
-        } 
-        else if ("delete".equals(action) && username != null) {
-            userDAO.deleteUser(username);
-            resp.sendRedirect("users?msg=User+Removed");
-            return;
-        }
-
-        List<User> userList = userDAO.getAllUsers();
-        req.setAttribute("userList", userList);
-        req.getRequestDispatcher("/admin/manageUsers.jsp").forward(req, resp);
     }
 
     @Override 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { 
-        if (!isAdmin(req)) { 
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN); 
-            return; 
-        } 
-        
-        String action = req.getParameter("action"); 
-        String u = req.getParameter("newUsername"); 
-        String p = req.getParameter("newPassword"); 
-        String r = req.getParameter("newRole"); 
+        try {
+            if (!isAdmin(req)) { 
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN); 
+                return; 
+            } 
+            
+            String action = req.getParameter("action"); 
+            String u = req.getParameter("newUsername"); 
+            String p = req.getParameter("newPassword"); 
+            String r = req.getParameter("newRole"); 
 
-        if ("update".equals(action)) { 
-            userDAO.updateUser(u, p, r); 
-            resp.sendRedirect("users?msg=User+Updated"); 
-        } else { 
-            userDAO.addUser(new User(u, p, r)); 
-            resp.sendRedirect("users?msg=User+Added"); 
-        } 
+            if ("update".equals(action)) { 
+                userDAO.updateUser(u, p, r); 
+                resp.sendRedirect("users?msg=User+Updated"); 
+            } else { 
+                userDAO.addUser(new User(u, p, r)); 
+                resp.sendRedirect("users?msg=User+Added"); 
+            } 
+        } catch (Exception e) {
+            throw new ServletException("Error modifying user data", e);
+        }
     }
 
     private boolean isAdmin(HttpServletRequest req) {

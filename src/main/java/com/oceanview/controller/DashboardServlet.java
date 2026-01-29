@@ -18,27 +18,26 @@ public class DashboardServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
-            return;
+        try {
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("user") == null) {
+                response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
+                return;
+            }
+
+            int totalRes = reservationDAO.getTotalReservationsCount();
+            int arrivalsToday = reservationDAO.getArrivalsTodayCount();
+            int totalCapacity = settingsDAO.getTotalCapacity(); 
+            int availableRooms = totalCapacity - totalRes;
+
+            request.setAttribute("totalRes", totalRes);
+            request.setAttribute("arrivalsToday", arrivalsToday);
+            request.setAttribute("totalCapacity", totalCapacity); 
+            request.setAttribute("availableRooms", Math.max(0, availableRooms));
+
+            request.getRequestDispatcher("/system/dashboard.jsp").forward(request, response);
+        } catch (Exception e) {
+            throw new ServletException("Dashboard Load Failure", e);
         }
-
-        // Fetch live counts
-        int totalRes = reservationDAO.getTotalReservationsCount();
-        int arrivalsToday = reservationDAO.getArrivalsTodayCount();
-        
-        // Fetch Dynamic Capacity from SettingsDAO
-        int totalCapacity = settingsDAO.getTotalCapacity(); 
-        int availableRooms = totalCapacity - totalRes;
-
-        // 3. Set attributes
-        request.setAttribute("totalRes", totalRes);
-        request.setAttribute("arrivalsToday", arrivalsToday);
-        request.setAttribute("totalCapacity", totalCapacity); 
-        request.setAttribute("availableRooms", Math.max(0, availableRooms));
-
-        request.getRequestDispatcher("/system/dashboard.jsp").forward(request, response);
     }
 }

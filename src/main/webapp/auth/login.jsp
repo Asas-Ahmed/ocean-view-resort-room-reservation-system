@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Ocean View Resort</title>
+    <link rel="preload" href="${pageContext.request.contextPath}/resources/images/loginBg.webp" as="image">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
     <script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
 </head>

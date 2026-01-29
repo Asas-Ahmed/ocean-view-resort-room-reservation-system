@@ -6,15 +6,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReportService {
-
     private final ReservationDAO dao = new ReservationDAO();
 
-    // Management Report
-    public long getTotalReservations() {
+    public long getTotalReservations() throws Exception {
         return dao.getAllReservations().size();
     }
 
-    public List<Reservation> getReservationsByRoomType(String type) {
+    public List<Reservation> getReservationsByRoomType(String type) throws Exception {
         return dao.getAllReservations()
                   .stream()
                   .filter(r -> r.getRoomType().equalsIgnoreCase(type))

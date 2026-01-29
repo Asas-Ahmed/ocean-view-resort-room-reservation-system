@@ -57,42 +57,57 @@ public class ReservationServlet extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            req.setAttribute("error", "Input Error: " + e.getMessage());
-            String action = req.getParameter("action");
-            
-            if ("update".equals(action)) {
-                // If update fails, stay on edit page
-                req.getRequestDispatcher("reservations/edit.jsp").forward(req, resp);
-            } else {
-                // If add fails, stay on add page
-                req.getRequestDispatcher("reservations/add.jsp").forward(req, resp);
+            e.printStackTrace();
+
+            // If it's a "User Error"
+            if (e instanceof java.text.ParseException || e instanceof NumberFormatException) {
+                req.setAttribute("error", "Input Error: Please check your dates and numbers.");
+                String action = req.getParameter("action");
+                
+                if ("update".equals(action)) {
+                    req.getRequestDispatcher("reservations/edit.jsp").forward(req, resp);
+                } else {
+                    req.getRequestDispatcher("reservations/add.jsp").forward(req, resp);
+                }
+            } 
+            // If it's a "Critical Error" (Database is down, code crashed)
+            else {
+                // Triggers 500.jsp automatically
+                throw new ServletException("Critical System Error", e);
             }
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("action");
-        String idParam = req.getParameter("id");
+        try {
+            String action = req.getParameter("action");
+            String idParam = req.getParameter("id");
 
-        // HANDLE DELETE
-        if ("delete".equals(action) && idParam != null) {
-            reservationService.deleteReservation(Integer.parseInt(idParam));
-            resp.sendRedirect("reservation?msg=Reservation+Deleted");
-            return;
+            // HANDLE DELETE
+            if ("delete".equals(action) && idParam != null) {
+                reservationService.deleteReservation(Integer.parseInt(idParam));
+                resp.sendRedirect("reservation?msg=Reservation+Deleted");
+                return;
+            }
+
+            // HANDLE EDIT
+            if ("edit".equals(action) && idParam != null) {
+                Reservation res = reservationService.getReservationById(Integer.parseInt(idParam));
+                req.setAttribute("res", res);
+                req.getRequestDispatcher("reservations/edit.jsp").forward(req, resp);
+                return;
+            }
+
+            // DEFAULT: VIEW ALL
+            List<Reservation> reservations = reservationService.getAllReservations();
+            req.setAttribute("reservations", reservations);
+            req.getRequestDispatcher("reservations/viewAll.jsp").forward(req, resp);
+            
+        } catch (Exception e) {
+            // Catches DB failure and sends to 500.jsp
+            e.printStackTrace();
+            throw new ServletException("Reservation System Error", e);
         }
-
-        // HANDLE EDIT (Fetch data and go to Edit Page)
-        if ("edit".equals(action) && idParam != null) {
-            Reservation res = reservationService.getReservationById(Integer.parseInt(idParam));
-            req.setAttribute("res", res);
-            req.getRequestDispatcher("reservations/edit.jsp").forward(req, resp);
-            return;
-        }
-
-        // DEFAULT: VIEW ALL
-        List<Reservation> reservations = reservationService.getAllReservations();
-        req.setAttribute("reservations", reservations);
-        req.getRequestDispatcher("reservations/viewAll.jsp").forward(req, resp);
     }
 }

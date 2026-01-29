@@ -3,12 +3,12 @@ import com.oceanview.model.Reservation;
 import java.util.List;
 
 public interface IReservationDAO {
-    boolean addReservation(Reservation res);
-    boolean deleteReservation(int id);
-    boolean updateReservation(Reservation res);
-    List<Reservation> getAllReservations();
-    Reservation getReservationById(int id);
-    int getTotalReservationsCount();
-    int getArrivalsTodayCount();
-    List<Reservation> searchReservations(String query);
+    boolean addReservation(Reservation res) throws Exception;
+    boolean deleteReservation(int id) throws Exception;
+    boolean updateReservation(Reservation res) throws Exception;
+    List<Reservation> getAllReservations() throws Exception;
+    Reservation getReservationById(int id) throws Exception;
+    int getTotalReservationsCount() throws Exception;
+    int getArrivalsTodayCount() throws Exception;
+    List<Reservation> searchReservations(String query) throws Exception;
 }

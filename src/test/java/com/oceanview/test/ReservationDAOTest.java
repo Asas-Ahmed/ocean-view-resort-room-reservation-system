@@ -21,7 +21,7 @@ public class ReservationDAOTest {
     }
 
     @Test
-    public void testGetAllReservations() {
+    public void testGetAllReservations() throws Exception {
         List<Reservation> reservations = dao.getAllReservations();
         assertNotNull(reservations);
     }
