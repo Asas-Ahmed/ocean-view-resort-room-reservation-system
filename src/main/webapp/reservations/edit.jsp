@@ -1,70 +1,78 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Edit Reservation - Ocean View</title>
-    <style>
-        :root { --fey-blue: #0052cc; --fey-purple: #6c5ce7; --fey-gradient: linear-gradient(135deg, #0052cc 0%, #6c5ce7 100%); --bg-light: #f4f7fa; --text-dark: #1e293b; } 
-    	body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg-light); margin: 0; padding: 40px 20px; color: var(--text-dark); } 
-    	.form-box { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 500px; margin: auto; border-top: 6px solid var(--fey-purple); } 
-    	h2 { color: var(--fey-blue); text-align: center; margin-top: 0; margin-bottom: 25px; font-size: 1.5rem; } 
-    	form { display: flex; flex-direction: column; gap: 5px; font-weight: 600; font-size: 0.9rem; color: #475569; } 
-    	input, select { width: 100%; padding: 12px; margin: 8px 0 18px 0; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 14px; transition: all 0.3s ease; font-family: inherit; } 
-    	input:focus, select:focus { border-color: var(--fey-purple); outline: none; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1); } 
-    	button { width: 100%; padding: 14px; background: var(--fey-gradient); border: none; color: white; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: transform 0.2s, opacity 0.3s; margin-top: 10px; } 
-    	button:hover { opacity: 0.9; transform: translateY(-1px); } 
-    	a { display: block; text-align: center; margin-top: 20px; text-decoration: none; color: var(--fey-blue); font-weight: 600; font-size: 0.9rem; } 
-    	a:hover { text-decoration: underline; } 
-        p.error-msg { background: #fee2e2; padding: 10px; border-radius: 6px; border: 1px solid #fecaca; font-size: 0.85rem; font-weight: 600; color: red; text-align: center; }
-    </style>
-    <script>
-        function validateForm() {
-            const checkIn = new Date(document.getElementsByName("checkInDate")[0].value);
-            const checkOut = new Date(document.getElementsByName("checkOutDate")[0].value);
-            const contact = document.getElementsByName("contactNumber")[0].value;
-
-            if (checkOut <= checkIn) {
-                alert("Check-out date must be after check-in date!");
-                return false;
-            }
-            if (!/^\d{10}$/.test(contact)) {
-                alert("Contact number must be exactly 10 digits!");
-                return false;
-            }
-            return true;
-        }
-    </script>
+    <meta charset="UTF-8">
+    <title>Edit Reservation - Ocean View Resort</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+    <script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
 </head>
-<body>
-    <div class="form-box">
-        <h2>✏️ Edit Reservation #${res.reservationId}</h2>
+<body class="dashboard-body">
+<div id="page-loader">
+    <span class="loader-spinner"></span>
+</div>
 
-        <%-- ERROR DISPLAY --%>
-        <% if(request.getAttribute("error") != null) { %>
-            <p class="error-msg"><%= request.getAttribute("error") %></p>
-        <% } %>
+<div class="main-content">
+    <div class="form-card" style="max-width: 700px; margin: 2rem auto;">
+        <h1>✏️ Edit Reservation <span class="res-id">#${res.reservationId}</span></h1>
 
-        <form action="reservation" method="post" onsubmit="return validateForm()">
+        <c:if test="${not empty error}">
+            <p class="error-msg">⚠️ ${error}</p>
+        </c:if>
+
+        <form action="${pageContext.request.contextPath}/reservation" method="post" onsubmit="return validateForm()">
             <input type="hidden" name="action" value="update">
             <input type="hidden" name="reservationId" value="${res.reservationId}">
-            
-            Guest Name: <input type="text" name="guestName" value="${res.guestName}" required>
-            Address: <input type="text" name="address" value="${res.address}" required>
-            Contact: <input type="text" name="contactNumber" value="${res.contactNumber}" required>
-            
-            Room: 
-            <select name="roomType">
-                <option value="Standard" ${res.roomType == 'Standard' ? 'selected' : ''}>Standard</option>
-                <option value="Deluxe" ${res.roomType == 'Deluxe' ? 'selected' : ''}>Deluxe</option>
-                <option value="Suite" ${res.roomType == 'Suite' ? 'selected' : ''}>Suite</option>
-            </select>
 
-            Check-In: <input type="date" name="checkInDate" value="${res.checkInDate}" required>
-            Check-Out: <input type="date" name="checkOutDate" value="${res.checkOutDate}" required>
-            
-            <button type="submit">Update Changes</button>
+            <div class="form-group">
+                <label>Reservation ID</label>
+                <input type="text" value="RES-${res.reservationId}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="guestName">Guest Name</label>
+                <input type="text" id="guestName" name="guestName" value="${res.guestName}" placeholder="Full Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" rows="3" required>${res.address}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="contactNumber">Contact Number</label>
+                    <input type="tel" id="contactNumber" name="contactNumber" value="${res.contactNumber}" placeholder="10-digit mobile" required>
+                </div>
+                <div class="form-group">
+                    <label for="roomType">Room Type</label>
+                    <select id="roomType" name="roomType" required>
+                        <option value="Standard" ${res.roomType == 'Standard' ? 'selected' : ''}>Standard</option>
+                        <option value="Deluxe" ${res.roomType == 'Deluxe' ? 'selected' : ''}>Deluxe</option>
+                        <option value="Suite" ${res.roomType == 'Suite' ? 'selected' : ''}>Suite</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="checkIn">Check-in Date</label>
+                    <input type="date" id="checkIn" name="checkInDate" value="${res.checkInDate}" required>
+                </div>
+                <div class="form-group">
+                    <label for="checkOut">Check-out Date</label>
+                    <input type="date" id="checkOut" name="checkOutDate" value="${res.checkOutDate}" required>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 12px;">Save Changes</button>
+                <a href="${pageContext.request.contextPath}/reservation" class="btn btn-secondary" style="width: 100%; justify-content: center;">Discard Edits</a>
+            </div>
         </form>
-        <a href="reservation">Cancel and Go Back</a>
     </div>
+</div>
+
 </body>
 </html>

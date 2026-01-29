@@ -42,7 +42,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("user", user);
                 
                 // Success Redirect
-                resp.sendRedirect(req.getContextPath() + "/system/dashboard.jsp");
+                resp.sendRedirect(req.getContextPath() + "/system/dashboard");
                 return; 
             }
             
@@ -59,7 +59,17 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // Direct browser to the login page if they just visit /login
+        String action = req.getParameter("action");
+        
+        if ("logout".equals(action)) {
+            HttpSession session = req.getSession(false);
+            if (session != null) {
+                session.invalidate(); // Destroys the session completely
+            }
+            resp.sendRedirect(req.getContextPath() + "/index.jsp");
+            return;
+        }
+        
         resp.sendRedirect(req.getContextPath() + "/auth/login.jsp");
     }
 }

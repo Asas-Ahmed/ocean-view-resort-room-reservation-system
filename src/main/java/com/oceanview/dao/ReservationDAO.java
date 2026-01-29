@@ -102,4 +102,47 @@ public class ReservationDAO implements IReservationDAO {
         }
         return null;
     }
+    
+ // Get total count of all reservations (Active Bookings)
+    public int getTotalReservationsCount() {
+        String sql = "SELECT COUNT(*) FROM reservations";
+        try (Connection con = DBConnection.getInstance().getConnection();
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    // Get guests arriving today (Expected Arrivals)
+    public int getArrivalsTodayCount() {
+        String sql = "SELECT COUNT(*) FROM reservations WHERE check_in = CURRENT_DATE";
+        try (Connection con = DBConnection.getInstance().getConnection();
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    // Search by ID or Name (Useful for search bar)
+    public List<Reservation> searchReservations(String query) {
+        List<Reservation> list = new ArrayList<>();
+        String sql = "SELECT * FROM reservations WHERE guest_name LIKE ? OR reservation_id LIKE ?";
+        try (Connection con = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, "%" + query + "%");
+            ps.setString(2, "%" + query + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Reservation(
+                        rs.getInt("reservation_id"), rs.getString("guest_name"),
+                        rs.getString("address"), rs.getString("contact_number"),
+                        rs.getString("room_type"), rs.getDate("check_in"), rs.getDate("check_out")
+                    ));
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
 }

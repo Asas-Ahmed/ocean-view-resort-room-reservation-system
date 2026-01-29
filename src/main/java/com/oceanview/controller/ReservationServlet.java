@@ -29,9 +29,9 @@ public class ReservationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            String action = req.getParameter("action"); // Check if it's an update or new add
+            String action = req.getParameter("action");
 
-            // 1. Capture Form Data
+            // Capture Form Data
             String guestName = req.getParameter("guestName");
             String address = req.getParameter("address");
             String contactNumber = req.getParameter("contactNumber");
@@ -50,7 +50,7 @@ public class ReservationServlet extends HttpServlet {
                 Reservation reservation = new Reservation(guestName, address, contactNumber, roomType, checkInDate, checkOutDate);
                 boolean success = reservationService.addReservation(reservation);
                 if (success) {
-                    resp.sendRedirect(req.getContextPath() + "/system/dashboard.jsp?msg=Reservation+added+successfully");
+                    resp.sendRedirect(req.getContextPath() + "/reservation?msg=Reservation+added+successfully");
                 } else {
                     req.setAttribute("error", "Failed to save to database.");
                     req.getRequestDispatcher("reservations/add.jsp").forward(req, resp);
@@ -61,7 +61,7 @@ public class ReservationServlet extends HttpServlet {
             String action = req.getParameter("action");
             
             if ("update".equals(action)) {
-                // If update fails, we need to stay on edit page
+                // If update fails, stay on edit page
                 req.getRequestDispatcher("reservations/edit.jsp").forward(req, resp);
             } else {
                 // If add fails, stay on add page
@@ -75,14 +75,14 @@ public class ReservationServlet extends HttpServlet {
         String action = req.getParameter("action");
         String idParam = req.getParameter("id");
 
-        // 1. HANDLE DELETE
+        // HANDLE DELETE
         if ("delete".equals(action) && idParam != null) {
             reservationService.deleteReservation(Integer.parseInt(idParam));
             resp.sendRedirect("reservation?msg=Reservation+Deleted");
             return;
         }
 
-        // 2. HANDLE EDIT (Fetch data and go to Edit Page)
+        // HANDLE EDIT (Fetch data and go to Edit Page)
         if ("edit".equals(action) && idParam != null) {
             Reservation res = reservationService.getReservationById(Integer.parseInt(idParam));
             req.setAttribute("res", res);
@@ -90,7 +90,7 @@ public class ReservationServlet extends HttpServlet {
             return;
         }
 
-        // 3. DEFAULT: VIEW ALL
+        // DEFAULT: VIEW ALL
         List<Reservation> reservations = reservationService.getAllReservations();
         req.setAttribute("reservations", reservations);
         req.getRequestDispatcher("reservations/viewAll.jsp").forward(req, resp);

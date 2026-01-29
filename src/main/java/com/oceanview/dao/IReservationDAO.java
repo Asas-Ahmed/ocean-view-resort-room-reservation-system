@@ -8,4 +8,7 @@ public interface IReservationDAO {
     boolean updateReservation(Reservation res);
     List<Reservation> getAllReservations();
     Reservation getReservationById(int id);
+    int getTotalReservationsCount();
+    int getArrivalsTodayCount();
+    List<Reservation> searchReservations(String query);
 }

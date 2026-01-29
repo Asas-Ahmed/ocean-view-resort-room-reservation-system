@@ -1,105 +1,191 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Manage Staff - Ocean View</title>
-    <style> 
-    :root { --fey-blue: #0052cc; --fey-purple: #6c5ce7; --fey-gradient: linear-gradient(135deg, #0052cc 0%, #6c5ce7 100%); --bg-light: #f4f7fa; --text-dark: #1e293b; } 
-    body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg-light); padding: 40px 20px; color: var(--text-dark); margin: 0; } 
-    .container { max-width: 950px; margin: auto; background: white; padding: 35px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); } 
-    h2 { color: var(--fey-blue); border-bottom: 3px solid var(--fey-purple); padding-bottom: 12px; margin-top: 0; } .form-section { background: #f8fafc; padding: 25px; border-radius: 10px; margin-bottom: 35px; border: 1px solid #e2e8f0; } 
-    h3 { color: var(--text-dark); margin-top: 0; font-size: 1.1rem; } 
-    .form-group { margin-bottom: 15px; } label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-dark); font-size: 0.9rem; } 
-    input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px; } 
-    input:focus { outline: none; border-color: var(--fey-purple); box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1); }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; } 
-    th { background: #f1f5f9; color: var(--fey-blue); padding: 15px; text-align: left; font-weight: 600; border-bottom: 2px solid #e2e8f0; } 
-    td { padding: 15px; border-bottom: 1px solid #f1f5f9; }
-    .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 14px; display: inline-block; font-weight: 600; transition: 0.3s; } 
-    .btn-add, .btn-update { background: var(--fey-gradient); color: white; } 
-    .btn-add:hover, .btn-update:hover { opacity: 0.9; transform: translateY(-1px); } 
-    .btn-delete { background: #fee2e2; color: #dc2626; } 
-    .btn-delete:hover { background: #dc2626; color: white; } 
-    .btn-edit { background: #e0e7ff; color: #4338ca; margin-right: 5px; } 
-    .btn-edit:hover { background: #4338ca; color: white; }
-    .badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; } 
-    .admin-badge { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; } 
-    .staff-badge { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; } 
-    .back-link { color: var(--fey-blue); text-decoration: none; font-weight: bold; font-size: 0.95rem; } 
-    .back-link:hover { text-decoration: underline; } 
-    </style>
+    <meta charset="UTF-8">
+    <title>Manage Users - Ocean View Resort</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+    <script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
 </head>
-<body>
+<body class="dashboard-body">
+<div id="page-loader">
+    <span class="loader-spinner"></span>
+</div>
 
-<div class="container">
-    <h2>👥 Staff Account Management</h2>
-
-    <c:if test="${not empty param.msg}">
-        <p style="color: green; font-weight: bold;">✅ ${param.msg}</p>
-    </c:if>
-
-    <div class="form-section">
-        <h3>${empty editUser ? '➕ Add New Staff Member' : '✏️ Edit Staff Member'}</h3>
-        <form action="${pageContext.request.contextPath}/admin/users" method="post">
-            <input type="hidden" name="action" value="${empty editUser ? 'add' : 'update'}">
-            
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>Username</label>
-                    <input type="text" name="newUsername" value="${editUser.username}" ${empty editUser ? '' : 'readonly'} required>
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Password ${empty editUser ? '' : '(Leave blank to keep current)'}</label>
-                    <input type="password" name="newPassword" ${empty editUser ? 'required' : ''}>
-                </div>
-                <div class="form-group" style="flex: 0.5;">
-                    <label>Role</label>
-                    <select name="newRole">
-                        <option value="STAFF" ${editUser.role == 'STAFF' ? 'selected' : ''}>STAFF</option>
-                        <option value="ADMIN" ${editUser.role == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
-                    </select>
-                </div>
-            </div>
-            <button type="submit" class="btn ${empty editUser ? 'btn-add' : 'btn-update'}">
-                ${empty editUser ? 'Create Account' : 'Update Account'}
-            </button>
-            <c:if test="${not empty editUser}">
-                <a href="${pageContext.request.contextPath}/admin/users" style="margin-left: 10px; color: #666;">Cancel</a>
-            </c:if>
-        </form>
+<div class="sidebar">
+    <div class="sidebar-brand">
+        <h2 style="margin-bottom: 0;">🌊 OCEAN VIEW</h2>
+        <p style="font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px;">RESORT MANAGEMENT</p>
     </div>
+    
+    <ul>
+        <li><a href="${pageContext.request.contextPath}/system/dashboard">Dashboard Overview</a></li>
+        <li><a href="${pageContext.request.contextPath}/reservation">Reservation Manager</a></li>
+        
+        <c:if test="${sessionScope.user.role == 'ADMIN'}">
+            <li><a href="${pageContext.request.contextPath}/admin/users" class="active">Staff Directory</a></li>
+        </c:if>
+        
+        <li><a href="${pageContext.request.contextPath}/system/help.jsp">Support Center</a></li>
+    </ul>
+    
+    <div style="margin-top: auto; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px;">
+        <p style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; margin-bottom: 0.8rem;">Current Staff</p>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
+            <div class="user-avatar">${sessionScope.user.username.substring(0,1).toUpperCase()}</div>
+            <div style="overflow: hidden;">
+                <p style="font-weight: 600; font-size: 0.85rem; color: white; white-space: nowrap; text-overflow: ellipsis;">${sessionScope.user.username}</p>
+                <p style="font-size: 0.75rem; color: #94a3b8;">${sessionScope.user.role}</p>
+            </div>
+        </div>
+        <a href="${pageContext.request.contextPath}/login?action=logout" class="btn btn-secondary" style="width: 100%; font-size: 0.75rem; justify-content: center; padding: 8px;">Log Out</a>
+    </div>
+</div>
 
-    <h3>Current System Users</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach var="u" items="${userList}">
+<div class="main-content">
+    <header style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+            <h1 style="font-size: 1.8rem; color: var(--text-heading); font-weight: 800; letter-spacing: -0.5px;">Staff Management</h1>
+            <p style="color: var(--text-muted); font-size: 1rem;">System-wide user access and privilege control.</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+             <span class="badge admin-badge" style="padding: 10px 20px; border-radius: 50px;">Total Personnel: ${userList.size()}</span>
+        </div>
+    </header>
+    
+    <%-- System Notifications --%>
+	<c:if test="${not empty param.msg}">
+	    <div class="status-msg alert-success" style="padding: 1rem; background: #dcfce7; color: #166534; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #bbf7d0; display: flex; align-items: center; gap: 10px;">
+	        <span style="font-size: 1.2rem;">✅</span>
+	        <span style="font-weight: 600;">${param.msg}</span>
+	    </div>
+	</c:if>
+	
+	<c:if test="${not empty error}">
+	    <div class="status-msg-error" style="padding: 1rem; background: #fef2f2; color: #991b1b; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #fecaca;">
+	        ⚠️ ${error}
+	    </div>
+	</c:if>
+
+    <%-- ADD/EDIT FORM CARD --%>
+	<div class="form-card staff-form">
+	    <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem; color: var(--text-heading); font-weight: 700;">
+	        ${empty editUser ? '👤 Create New Staff Member' : '✏️ Modify Account Access'}
+	    </h3>
+	    <form action="${pageContext.request.contextPath}/admin/users" method="post">
+	        <input type="hidden" name="action" value="${empty editUser ? 'add' : 'update'}">
+	        
+	        <div style="display: grid; grid-template-columns: 1.2fr 1.5fr 0.8fr 0.6fr; gap: 20px; align-items: start; padding-bottom: 25px;">
+	            
+	            <div class="form-group" style="margin-bottom: 0;">
+	                <label style="color: var(--text-muted);">Username</label>
+	                <input type="text" name="newUsername" value="${editUser.username}" ${empty editUser ? '' : 'readonly'} placeholder="e.g. jdoe_resort" required>
+	            </div>
+	
+	            <div class="form-group" style="margin-bottom: 0; position: relative;">
+	                <label style="color: var(--text-muted);">Security Credentials</label>
+	                <input type="password" name="newPassword" id="passwordInput" 
+	                       placeholder="${empty editUser ? 'Enter password' : 'Keep empty for no change'}" 
+	                       ${empty editUser ? 'required' : ''} oninput="checkStrength(this.value)">
+	                
+	                <div id="meterWrapper" style="position: absolute; width: 100%; top: 100%; left: 0;">
+	                    <div id="meterContainer" style="display: none; margin-top: 5px;">
+	                        <div class="strength-meter" style="height: 4px; background: #e2e8f0; border-radius: 2px;">
+	                            <div id="strengthBar" style="height: 100%; width: 0%; transition: all 0.3s; border-radius: 2px;"></div>
+	                        </div>
+	                        <div id="strengthText" style="font-size: 0.65rem; font-weight: bold; margin-top: 2px;"></div>
+	                    </div>
+	                    <span class="password-hint" style="font-size: 0.65rem; color: #94a3b8; display: block;">Min 8 chars: Letters & Numbers</span>
+	                </div>
+	            </div>
+	
+	            <div class="form-group" style="margin-bottom: 0;">
+	                <label style="color: var(--text-muted);">Access Permission</label>
+	                <select name="newRole" style="height: 45px;">
+	                    <option value="STAFF" ${editUser.role == 'STAFF' ? 'selected' : ''}>STAFF LEVEL</option>
+	                    <option value="ADMIN" ${editUser.role == 'ADMIN' ? 'selected' : ''}>ADMIN LEVEL</option>
+	                </select>
+	            </div>
+	
+	            <div style="padding-top: 24px;"> <button type="submit" class="btn btn-primary" style="height: 45px; width: 100%; justify-content: center; font-size: 0.9rem;">
+	                    ${empty editUser ? 'Deploy User' : 'Update Access'}
+	                </button>
+	            </div>
+	        </div>
+	
+	        <c:if test="${not empty editUser}">
+	            <div style="margin-top: 5px;"><a href="users" class="back-link" style="color: #ef4444; font-weight: 600;">✕ Abort Changes</a></div>
+	        </c:if>
+	    </form>
+	</div>
+
+    <%-- TABLE CARD --%>
+    <div class="table-card">
+        <div class="table-header-tool">
+            <div>
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-heading);">Authorized Personnel</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Current active system accounts</p>
+            </div>
+        </div>
+
+        <table class="admin-table">
+            <thead>
                 <tr>
-                    <td><strong>${u.username}</strong></td>
-                    <td>
-                        <span class="badge ${u.role == 'ADMIN' ? 'admin-badge' : 'staff-badge'}">${u.role}</span>
-                    </td>
-                    <td>
-                        <a href="${pageContext.request.contextPath}/admin/users?action=edit&username=${u.username}" class="btn btn-edit">✏️ Edit</a>
-                        <c:if test="${sessionScope.user.username != u.username}">
-                            <a href="${pageContext.request.contextPath}/admin/users?action=delete&username=${u.username}" 
-                               class="btn btn-delete" onclick="return confirm('Delete user ${u.username}?')">Remove</a>
-                        </c:if>
-                    </td>
+                    <th style="width: 40%;">User Identity</th>
+                    <th style="width: 30%;">Permission Clearance</th>
+                    <th style="width: 30%; text-align: right;">System Operations</th>
                 </tr>
-            </c:forEach>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <c:forEach var="u" items="${userList}">
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div class="user-avatar">${u.username.substring(0,1).toUpperCase()}</div>
+                                <div>
+                                    <div style="font-weight: 700; color: var(--text-heading); font-size: 1rem;">${u.username}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">Active Member</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge ${u.role == 'ADMIN' ? 'admin-badge' : 'staff-badge'}" style="letter-spacing: 0.5px; padding: 6px 12px;">
+                                ${u.role}
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            <div style="display: inline-flex; gap: 8px;">
+                                <a href="users?action=edit&username=${u.username}" class="btn btn-edit">Modify</a>
+								<c:if test="${sessionScope.user.username != u.username}">
+								    <a href="javascript:void(0)" 
+								       class="btn btn-delete" 
+								       onclick="showUserDeleteModal('${u.username}', 'users?action=delete&username=${u.username}')">
+								       Revoke
+								    </a>
+								</c:if>
+                            </div>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-    <br>
-    <a href="${pageContext.request.contextPath}/system/dashboard.jsp" style="color: #003366; font-weight: bold; text-decoration: none;">⬅ Back to Dashboard</a>
+<div id="deleteModal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-icon">🔐</div>
+        <h3 style="color: #b91c1c;">Revoke Access</h3>
+        <p>Are you sure you want to permanently delete the staff account for <span id="staffNameSpan" style="font-weight: bold; color: var(--text-heading);"></span>?</p>
+        <p style="font-size: 0.8rem; color: #64748b; margin-top: 10px; background: #fff1f2; padding: 10px; border-radius: 8px;">
+            ⚠️ This will immediately terminate their system login privileges.
+        </p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <a id="confirmDeleteBtn" href="#" class="btn btn-delete" style="background: #ef4444; color: white;">Confirm Revocation</a>
+        </div>
+    </div>
 </div>
 
 </body>

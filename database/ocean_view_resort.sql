@@ -1,11 +1,9 @@
--- 1. Wipe the old database
+-- 1. Wipe and Recreate
 DROP DATABASE IF EXISTS ocean_view_resort_db;
-
--- 2. Create the new one
 CREATE DATABASE ocean_view_resort_db;
 USE ocean_view_resort_db;
 
--- 3. Create User Table (Note: password is 255 chars for BCrypt)
+-- 2. User Table
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -13,7 +11,7 @@ CREATE TABLE users (
     role VARCHAR(20) DEFAULT 'STAFF'
 );
 
--- 4. Create Reservations Table
+-- 3. Reservations Table
 CREATE TABLE reservations (
     reservation_id INT AUTO_INCREMENT PRIMARY KEY,
     guest_name VARCHAR(100) NOT NULL,
@@ -25,7 +23,17 @@ CREATE TABLE reservations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 5. Insert Sample Data
+-- 4. NEW: System Settings Table
+CREATE TABLE system_settings (
+    setting_id INT PRIMARY KEY AUTO_INCREMENT,
+    config_key VARCHAR(50) UNIQUE NOT NULL,
+    config_value VARCHAR(100) NOT NULL
+);
+
+-- 5. Seed Data
+INSERT INTO system_settings (config_key, config_value) 
+VALUES ('total_capacity', '50');
+
 INSERT INTO reservations (guest_name, address, contact_number, room_type, check_in, check_out)
 VALUES ('Kasun Perera', '123 Galle Road, Colombo', '0771234567', 'Standard', '2026-02-01', '2026-02-04');
 
@@ -35,3 +43,4 @@ VALUES ('Sarah Jennings', '45 Ocean View, Mirissa', '0719876543', 'Deluxe', '202
 -- Verify
 SELECT * FROM users;
 SELECT * FROM reservations;
+SELECT * FROM system_settings;
