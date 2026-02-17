@@ -41,7 +41,7 @@
         </p>
         
         <div class="hero-actions-row">
-            <a href="${pageContext.request.contextPath}/auth/login.jsp" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 12px;">Launch System</a>
+            <a href="${pageContext.request.contextPath}/system/dashboard" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 12px;">Launch System</a>
             <a href="${pageContext.request.contextPath}/system/help.jsp" class="btn btn-secondary" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 12px; margin-left: 15px; background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1);">Documentation</a>
         </div>
     </header>

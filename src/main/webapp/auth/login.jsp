@@ -8,6 +8,14 @@
     <title>Login | Ocean View Resort</title>
     <link rel="preload" href="${pageContext.request.contextPath}/resources/images/loginBg.webp" as="image">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+    <script>
+	    (function() {
+	        const savedTheme = localStorage.getItem('theme');
+	        if (savedTheme === 'dark') {
+	            document.documentElement.setAttribute('data-theme', 'dark');
+	        }
+	    })();
+	</script>
     <script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
 </head>
 <body class="login-page-body">
@@ -58,6 +66,6 @@
         </div>
     </div>
 </div>
-
+<jsp:include page="/WEB-INF/includes/theme-toggle.jsp" />
 </body>
 </html>

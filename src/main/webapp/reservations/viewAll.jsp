@@ -6,6 +6,14 @@
     <meta charset="UTF-8">
     <title>All Reservations - Ocean View Resort</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+    <script>
+	    (function() {
+	        const savedTheme = localStorage.getItem('theme');
+	        if (savedTheme === 'dark') {
+	            document.documentElement.setAttribute('data-theme', 'dark');
+	        }
+	    })();
+	</script>
     <script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
 </head>
 <body class="dashboard-body">
@@ -75,7 +83,7 @@
             <tbody>
                 <c:forEach var="res" items="${reservations}">
                     <tr>
-                        <td class="res-id"><c:out value="${res.formattedReservationId}"/></td>
+                        <td class="res-id"><c:out value="${res.reservationId}"/></td>
                         <td style="font-weight: 600; color: var(--text-heading);"><c:out value="${res.guestName}"/></td>
                         <td><span class="room-type-tag"><c:out value="${res.roomType}"/></span></td>
                         <td><c:out value="${res.checkInDate}"/></td>
@@ -122,6 +130,6 @@
         </div>
     </div>
 </div>
-
+<jsp:include page="/WEB-INF/includes/theme-toggle.jsp" />
 </body>
 </html>

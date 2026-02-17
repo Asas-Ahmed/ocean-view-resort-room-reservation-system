@@ -6,6 +6,35 @@
     <meta charset="UTF-8">
     <title>Edit Reservation - Ocean View Resort</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+    <style>
+		/* --- DARK MODE CALENDAR --- */
+		[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+			background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>');
+			background-repeat: no-repeat;
+			background-position: center;
+			filter: none !important;
+			width: 20px;
+			height: 20px;
+			cursor: pointer;
+		}
+		
+		[data-theme="dark"] .form-group input:focus {
+		    background-color: #020617 !important;
+		    color: white !important;
+		}
+		
+		[data-theme="dark"] input[type="date"] {
+		    color-scheme: dark !important;
+		}
+    </style>
+    <script>
+	    (function() {
+	        const savedTheme = localStorage.getItem('theme');
+	        if (savedTheme === 'dark') {
+	            document.documentElement.setAttribute('data-theme', 'dark');
+	        }
+	    })();
+	</script>
     <script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
 </head>
 <body class="dashboard-body">
@@ -26,7 +55,7 @@
             <input type="hidden" name="reservationId" value="${res.reservationId}">
 
             <div class="form-group">
-                <label>Reservation ID</label>
+                <label>Reservation ID (Locked)</label>
                 <input type="text" value="RES-${res.reservationId}" readonly>
             </div>
 
@@ -34,6 +63,14 @@
                 <label for="guestName">Guest Name</label>
                 <input type="text" id="guestName" name="guestName" value="${res.guestName}" placeholder="Full Name" required>
             </div>
+            
+            <div class="form-group">
+			    <label for="guestEmail">Email Address (Locked)</label>
+			    <input type="email" id="guestEmail" name="guestEmail" 
+			           value="${res.guestEmail}" 
+			           readonly 
+			           style="background-color: #f3f4f6; cursor: not-allowed; color: #6b7280;">
+			</div>
 
             <div class="form-group">
                 <label for="address">Address</label>
@@ -68,11 +105,13 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 12px;">Save Changes</button>
-                <a href="${pageContext.request.contextPath}/reservation" class="btn btn-secondary" style="width: 100%; justify-content: center;">Discard Edits</a>
+                <a href="${pageContext.request.contextPath}/reservation" class="btn btn-discard">
+				    Discard Edits
+				</a>
             </div>
         </form>
     </div>
 </div>
-
+<jsp:include page="/WEB-INF/includes/theme-toggle.jsp" />
 </body>
 </html>

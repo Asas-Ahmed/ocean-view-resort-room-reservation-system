@@ -6,26 +6,144 @@
     <meta charset="UTF-8">
     <title>Help Center | Ocean View Resort</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+	<script>
+	    (function() {
+	        const savedTheme = localStorage.getItem('theme');
+	        if (savedTheme === 'dark') {
+	            document.documentElement.setAttribute('data-theme', 'dark');
+	        }
+	    })();
+	</script>
     <script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
     <style>
-        /* Guest View Adjustments */
-        <c:if test="${empty sessionScope.user}">
-        .dashboard-body { display: block; } 
-        .main-content { margin-left: 0; padding: 4rem 10%; max-width: 1200px; margin: 0 auto; }
-        .help-grid { grid-template-columns: 1fr; }
-        @media (min-width: 1024px) {
-            .help-grid { grid-template-columns: 280px 1fr; gap: 3rem; }
-        }
-        </c:if>
-        
-        .help-section-card code {
-            background: #f1f5f9;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', Courier, monospace;
-            color: #e11d48;
-        }
-    </style>
+	    /* --- Guest View Logic --- */
+	    <c:if test="${empty sessionScope.user}">
+	    .dashboard-body { display: block; } 
+	    .main-content { margin-left: 0; padding: 4rem 10%; max-width: 1200px; margin: 0 auto; }
+	    .help-grid { grid-template-columns: 1fr; }
+	    @media (min-width: 1024px) {
+	        .help-grid { grid-template-columns: 280px 1fr; gap: 3rem; }
+	    }
+	    </c:if>
+	
+	    /* --- Inline Code Styles (Global) --- */
+	    .help-section-card code {
+	        background: #f1f5f9;
+	        padding: 2px 6px;
+	        border-radius: 4px;
+	        font-family: 'Courier New', Courier, monospace;
+	        color: #e11d48;
+	    }
+	
+	    /* --- DARK MODE ENGINE --- */
+	    [data-theme="dark"] {
+	        --bg-main: #020617;
+	        --bg-card: #0f172a;
+	        --text-heading: #ffffff;
+	        --text-body: #94a3b8;
+	        --text-muted: #64748b;
+	        --border-soft: #1e293b;
+	        --brand-primary: #6366f1;
+	    }
+	
+	    /* Global Dark */
+	    [data-theme="dark"] body, 
+	    [data-theme="dark"] .main-content, 
+	    [data-theme="dark"] .dashboard-body {
+	        background-color: var(--bg-main) !important;
+	        background-image: 
+	            radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.08) 0px, transparent 50%), 
+	            radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.08) 0px, transparent 50%) !important;
+	    }
+	
+	    /* Card & Info Box Surfaces */
+	    [data-theme="dark"] .help-section-card,
+	    [data-theme="dark"] .info-box {
+	        background-color: var(--bg-card) !important;
+	        border: 1px solid var(--border-soft) !important;
+	        color: var(--text-body) !important;
+	        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+	    }
+	
+	    [data-theme="dark"] .help-section-card h2 {
+	        color: var(--text-heading) !important;
+	    }
+	
+	    [data-theme="dark"] .help-section-card code {
+	        background: rgba(225, 29, 72, 0.15);
+	        color: #fb7185;
+	    }
+	
+	    /* --- Help Navigation --- */
+	    [data-theme="dark"] .help-nav {
+	        background: rgba(15, 23, 42, 0.4);
+	        border: 1px solid var(--border-soft);
+	        backdrop-filter: blur(10px);
+	        padding: 24px;
+	        border-radius: 12px;
+	        height: fit-content;
+	        position: sticky;
+	        top: 2rem;
+	    }
+	
+	    [data-theme="dark"] .help-nav h4 {
+	        color: #f8fafc !important;
+	        text-transform: uppercase;
+	        font-size: 0.75rem;
+	        letter-spacing: 0.1em;
+	        margin-bottom: 1.5rem;
+	        border-bottom: 1px solid var(--border-soft);
+	        padding-bottom: 12px;
+	    }
+	
+	    [data-theme="dark"] .help-nav ul {
+	        list-style: none;
+	        padding: 0;
+	    }
+	
+	    [data-theme="dark"] .help-nav ul li {
+	        margin-bottom: 0.5rem;
+	    }
+	
+	    [data-theme="dark"] .help-nav ul li a {
+	        color: var(--text-muted) !important;
+	        transition: all 0.25s ease;
+	        display: block;
+	        text-decoration: none;
+	        padding: 8px 12px;
+	        border-radius: 6px;
+	    }
+
+	    [data-theme="dark"] .help-nav ul li a:hover {
+	        color: white !important;
+	        background: rgba(255, 255, 255, 0.05);
+	        transform: translateX(5px);
+	    }
+	
+	    /* --- Table Dark Mode --- */
+	    [data-theme="dark"] .admin-table thead th {
+	        background: rgba(255, 255, 255, 0.03) !important;
+	        color: white !important;
+	        border-bottom: 1px solid var(--border-soft);
+	    }
+	
+	    [data-theme="dark"] .admin-table tbody td {
+	        border-bottom: 1px solid var(--border-soft);
+	        color: var(--text-body);
+	    }
+	
+	    [data-theme="dark"] .admin-table tbody tr:hover td {
+	        background: rgba(255, 255, 255, 0.02) !important;
+	        color: white !important;
+	    }
+	
+	    /* Admin Specific Section in Dark Mode */
+	    [data-theme="dark"] .admin-note {
+	        background: rgba(245, 158, 11, 0.05) !important;
+	        border: 1px solid rgba(245, 158, 11, 0.2) !important;
+	        color: #fbbf24 !important;
+	    }
+	</style>
 </head>
 <body class="dashboard-body">
 <div id="page-loader">
@@ -99,7 +217,7 @@
             <div style="margin-top: 2rem;">
                 <c:choose>
                     <c:when test="${not empty sessionScope.user}">
-                        <a href="${pageContext.request.contextPath}/system/dashboard" class="btn btn-secondary" style="width:100%; font-size:0.8rem; justify-content: center;">Back to Dashboard</a>
+                        <a href="${pageContext.request.contextPath}/system/dashboard" class="btn btn-help" style="width:100%; font-size:0.8rem; justify-content: center;">Back to Dashboard</a>
                     </c:when>
                     <c:otherwise>
                         <a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-secondary" style="width:100%; font-size:0.8rem; justify-content: center;">Back to Home</a>
@@ -193,6 +311,6 @@
         </div>
     </div>
 </div>
-
+<jsp:include page="/WEB-INF/includes/theme-toggle.jsp" />
 </body>
 </html>

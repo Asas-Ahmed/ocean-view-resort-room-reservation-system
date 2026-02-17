@@ -25,6 +25,22 @@
 	        contextPath: '${pageContext.request.contextPath}'
 	    };
 	</script>
+	<script>
+	    (function() {
+	        const savedTheme = localStorage.getItem('theme');
+	        if (savedTheme === 'dark') {
+	            document.documentElement.setAttribute('data-theme', 'dark');
+	        }
+	    })();
+	</script>
+	<script>
+	    (function() {
+	        const savedTheme = localStorage.getItem('theme');
+	        if (savedTheme === 'dark') {
+	            document.documentElement.setAttribute('data-theme', 'dark');
+	        }
+	    })();
+	</script>
 	<script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
 </head>
 <body class="dashboard-body">
@@ -112,7 +128,12 @@
 	            <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Adjust the total number of rooms available in the resort.</p>
 	        </div>
 	        <form action="${pageContext.request.contextPath}/system/settings" method="POST" style="display: flex; gap: 10px;">
-	            <input type="number" name="newCapacity" value="${totalCapacity}" min="1" required style="width: 70px; padding: 8px; border-radius: 6px; border: 1px solid var(--border-soft);">
+				<input type="number" 
+				       name="newCapacity" 
+				       class="input-modern capacity-input"
+				       value="${totalCapacity}" 
+				       min="1" 
+				       required>
 	            <button type="submit" class="btn btn-primary" style="padding: 8px 15px; font-size: 0.8rem;">Update</button>
 	        </form>
 	    </div>
@@ -149,5 +170,6 @@
     </div>
 </div>
 
+<jsp:include page="/WEB-INF/includes/theme-toggle.jsp" />
 </body>
 </html>

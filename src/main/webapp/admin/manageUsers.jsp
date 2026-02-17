@@ -6,6 +6,14 @@
     <meta charset="UTF-8">
     <title>Manage Users - Ocean View Resort</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+    <script>
+	    (function() {
+	        const savedTheme = localStorage.getItem('theme');
+	        if (savedTheme === 'dark') {
+	            document.documentElement.setAttribute('data-theme', 'dark');
+	        }
+	    })();
+	</script>
     <script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
 </head>
 <body class="dashboard-body">
@@ -56,14 +64,13 @@
     
     <%-- System Notifications --%>
 	<c:if test="${not empty param.msg}">
-	    <div class="status-msg alert-success" style="padding: 1rem; background: #dcfce7; color: #166534; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #bbf7d0; display: flex; align-items: center; gap: 10px;">
-	        <span style="font-size: 1.2rem;">✅</span>
-	        <span style="font-weight: 600;">${param.msg}</span>
+	    <div class="status-msg alert-success"> 
+		    <span>✅</span> <span>${param.msg}</span>
 	    </div>
 	</c:if>
 	
 	<c:if test="${not empty error}">
-	    <div class="status-msg-error" style="padding: 1rem; background: #fef2f2; color: #991b1b; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #fecaca;">
+	    <div class="status-msg-error">
 	        ⚠️ ${error}
 	    </div>
 	</c:if>
@@ -80,7 +87,7 @@
 	            
 	            <div class="form-group" style="margin-bottom: 0;">
 	                <label style="color: var(--text-muted);">Username</label>
-	                <input type="text" name="newUsername" value="${editUser.username}" ${empty editUser ? '' : 'readonly'} placeholder="e.g. jdoe_resort" required>
+	                <input type="text" name="newUsername" value="${editUser.username}" ${empty editUser ? '' : 'readonly'} placeholder="e.g. bob_resort" required>
 	            </div>
 	
 	            <div class="form-group" style="margin-bottom: 0; position: relative;">
@@ -123,10 +130,14 @@
     <%-- TABLE CARD --%>
     <div class="table-card">
         <div class="table-header-tool">
-            <div>
-                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-heading);">Authorized Personnel</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Current active system accounts</p>
-            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+			    <div style="width: 4px; height: 35px; background: var(--brand-primary); border-radius: 10px; box-shadow: 0 0 10px rgba(79, 70, 229, 0.4);"></div>
+			    
+			    <div>
+			        <h3 style="font-size: 1.1rem; color: var(--text-heading); margin: 0;">Authorized Personnel</h3>
+			        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Current active system accounts</p>
+			    </div>
+			</div>
         </div>
 
         <table class="admin-table">
@@ -187,6 +198,6 @@
         </div>
     </div>
 </div>
-
+<jsp:include page="/WEB-INF/includes/theme-toggle.jsp" />
 </body>
 </html>

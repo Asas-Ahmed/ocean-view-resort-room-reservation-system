@@ -6,6 +6,14 @@
     <meta charset="UTF-8">
     <title>Find Reservation - Ocean View Resort</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+    <script>
+	    (function() {
+	        const savedTheme = localStorage.getItem('theme');
+	        if (savedTheme === 'dark') {
+	            document.documentElement.setAttribute('data-theme', 'dark');
+	        }
+	    })();
+	</script>
     <script src="${pageContext.request.contextPath}/resources/js/script.js" defer></script>
 </head>
 <body>
@@ -87,6 +95,6 @@
         </div>
     </div>
 </div>
-
+<jsp:include page="/WEB-INF/includes/theme-toggle.jsp" />
 </body>
 </html>
