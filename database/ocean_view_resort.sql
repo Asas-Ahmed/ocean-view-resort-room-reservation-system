@@ -15,6 +15,7 @@ CREATE TABLE users (
 CREATE TABLE reservations (
     reservation_id INT AUTO_INCREMENT PRIMARY KEY,
     guest_name VARCHAR(100) NOT NULL,
+    guest_email VARCHAR(100) NOT NULL,
     address VARCHAR(200),
     contact_number VARCHAR(15) NOT NULL,
     room_type VARCHAR(50) NOT NULL,
@@ -23,7 +24,7 @@ CREATE TABLE reservations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. NEW: System Settings Table
+-- 4. System Settings Table
 CREATE TABLE system_settings (
     setting_id INT PRIMARY KEY AUTO_INCREMENT,
     config_key VARCHAR(50) UNIQUE NOT NULL,
@@ -34,13 +35,18 @@ CREATE TABLE system_settings (
 INSERT INTO system_settings (config_key, config_value) 
 VALUES ('total_capacity', '50');
 
-INSERT INTO reservations (guest_name, address, contact_number, room_type, check_in, check_out)
-VALUES ('Kasun Perera', '123 Galle Road, Colombo', '0771234567', 'Standard', '2026-02-01', '2026-02-04');
+-- Sample Reservations
+INSERT INTO reservations (guest_name, guest_email, address, contact_number, room_type, check_in, check_out)
+VALUES ('Kasun Perera', 'kasun@example.com', '123 Galle Road, Colombo', '0771234567', 'Standard', '2026-02-01', '2026-02-04');
 
-INSERT INTO reservations (guest_name, address, contact_number, room_type, check_in, check_out)
-VALUES ('Sarah Jennings', '45 Ocean View, Mirissa', '0719876543', 'Deluxe', '2026-02-10', '2026-02-12');
+-- 6. Verification
+SHOW TABLES;
 
--- Verify
+DESCRIBE users;
 SELECT * FROM users;
+
+DESCRIBE reservations;
 SELECT * FROM reservations;
+
+DESCRIBE system_settings;
 SELECT * FROM system_settings;

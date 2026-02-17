@@ -31,7 +31,7 @@ public class ReservationService {
         return reservationDAO.getReservationById(id); 
     }
 
-    public boolean addReservation(Reservation r) throws Exception { 
+    public int addReservation(Reservation r) throws Exception {
         validateReservation(r);
         return reservationDAO.addReservation(r); 
     }

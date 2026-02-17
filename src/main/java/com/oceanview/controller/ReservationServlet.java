@@ -3,6 +3,7 @@ package com.oceanview.controller;
 import com.oceanview.dao.ReservationDAO;
 import com.oceanview.model.Reservation;
 import com.oceanview.service.ReservationService;
+import com.oceanview.service.EmailService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,15 +16,16 @@ import java.util.List;
 
 @WebServlet("/reservation")
 public class ReservationServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 1L;
     private ReservationService reservationService;
+    private EmailService emailService;
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public void init() {
-        // Initialize once to save memory
+        // Initializing services with their dependencies
         this.reservationService = new ReservationService(new ReservationDAO());
+        this.emailService = new EmailService();
     }
 
     @Override
@@ -31,49 +33,53 @@ public class ReservationServlet extends HttpServlet {
         try {
             String action = req.getParameter("action");
 
-            // Capture Form Data
+            // Common form data for both Add and Update
             String guestName = req.getParameter("guestName");
+            String guestEmail = req.getParameter("guestEmail");
             String address = req.getParameter("address");
             String contactNumber = req.getParameter("contactNumber");
             String roomType = req.getParameter("roomType");
-            Date checkInDate = sdf.parse(req.getParameter("checkInDate"));
-            Date checkOutDate = sdf.parse(req.getParameter("checkOutDate"));
+            Date checkIn = sdf.parse(req.getParameter("checkInDate"));
+            Date checkOut = sdf.parse(req.getParameter("checkOutDate"));
 
             if ("update".equals(action)) {
                 // HANDLE UPDATE
                 int id = Integer.parseInt(req.getParameter("reservationId"));
-                Reservation reservation = new Reservation(id, guestName, address, contactNumber, roomType, checkInDate, checkOutDate);
-                reservationService.updateReservation(reservation);
+                Reservation res = new Reservation(id, guestName, guestEmail, address, contactNumber, roomType, checkIn, checkOut);
+                
+                reservationService.updateReservation(res);
                 resp.sendRedirect("reservation?msg=Reservation+updated+successfully");
+                
             } else {
                 // HANDLE NEW ADD
-                Reservation reservation = new Reservation(guestName, address, contactNumber, roomType, checkInDate, checkOutDate);
-                boolean success = reservationService.addReservation(reservation);
-                if (success) {
+                Reservation res = new Reservation(guestName, guestEmail, address, contactNumber, roomType, checkIn, checkOut);
+                int generatedId = reservationService.addReservation(res);
+
+                if (generatedId > 0) {
+                    // TRIGGER EMAIL NOTIFICATION if email exists
+                    if (guestEmail != null && !guestEmail.isEmpty()) {
+                        String reservationNo = String.format("RSV-%04d", generatedId);
+                        emailService.sendBookingConfirmation(guestEmail, guestName, reservationNo);
+                    }
                     resp.sendRedirect(req.getContextPath() + "/reservation?msg=Reservation+added+successfully");
                 } else {
-                    req.setAttribute("error", "Failed to save to database.");
+                    req.setAttribute("error", "Database Error: Could not save reservation.");
                     req.getRequestDispatcher("reservations/add.jsp").forward(req, resp);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-
-            // If it's a "User Error"
+            // Handle parsing errors or critical failures
             if (e instanceof java.text.ParseException || e instanceof NumberFormatException) {
                 req.setAttribute("error", "Input Error: Please check your dates and numbers.");
                 String action = req.getParameter("action");
-                
                 if ("update".equals(action)) {
                     req.getRequestDispatcher("reservations/edit.jsp").forward(req, resp);
                 } else {
                     req.getRequestDispatcher("reservations/add.jsp").forward(req, resp);
                 }
-            } 
-            // If it's a "Critical Error" (Database is down, code crashed)
-            else {
-                // Triggers 500.jsp automatically
-                throw new ServletException("Critical System Error", e);
+            } else {
+                throw new ServletException("Critical System Error during POST", e);
             }
         }
     }
@@ -91,7 +97,7 @@ public class ReservationServlet extends HttpServlet {
                 return;
             }
 
-            // HANDLE EDIT
+            // HANDLE EDIT (Fetch single record for edit form)
             if ("edit".equals(action) && idParam != null) {
                 Reservation res = reservationService.getReservationById(Integer.parseInt(idParam));
                 req.setAttribute("res", res);
@@ -105,9 +111,8 @@ public class ReservationServlet extends HttpServlet {
             req.getRequestDispatcher("reservations/viewAll.jsp").forward(req, resp);
             
         } catch (Exception e) {
-            // Catches DB failure and sends to 500.jsp
             e.printStackTrace();
-            throw new ServletException("Reservation System Error", e);
+            throw new ServletException("Reservation System Error during GET", e);
         }
     }
 }

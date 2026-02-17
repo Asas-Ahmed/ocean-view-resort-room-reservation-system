@@ -55,27 +55,27 @@ public class ApiReservationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         try {
-            // Read parameters from request
             String guestName = req.getParameter("guestName");
+            String guestEmail = req.getParameter("guestEmail");
             String address = req.getParameter("address");
             String contact = req.getParameter("contactNumber");
             String room = req.getParameter("roomType");
             Date checkIn = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("checkInDate"));
             Date checkOut = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("checkOutDate"));
+            Reservation r = new Reservation(guestName, guestEmail, address, contact, room, checkIn, checkOut);
+            
+            int generatedId = service.addReservation(r);
 
-            Reservation r = new Reservation(guestName, address, contact, room, checkIn, checkOut);
-            boolean success = service.addReservation(r);
-
-            if (success) {
+            if (generatedId > 0) {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
-                resp.getWriter().write("{\"message\":\"Reservation created successfully\"}");
+                resp.getWriter().write("{\"message\":\"Reservation created successfully\", \"id\":" + generatedId + "}");
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Failed to create reservation\"}");
             }
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"Invalid input data\"}");
+            resp.getWriter().write("{\"error\":\"Invalid input data: " + e.getMessage() + "\"}");
         }
     }
 }

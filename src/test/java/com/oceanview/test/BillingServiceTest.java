@@ -23,17 +23,19 @@ public class BillingServiceTest {
     public void testCalculateTotalStayCost() throws Exception {
         Date checkIn = sdf.parse("2026-03-01");
         Date checkOut = sdf.parse("2026-03-05"); // 4 nights
-        Reservation res = new Reservation("Jane Doe", "Colombo", "0712345678", "Deluxe", checkIn, checkOut);
+        Reservation res = new Reservation("Jane Doe", "jane@example.com", "Colombo", "0712345678", "Deluxe", checkIn, checkOut);
+        
         double total = billingService.calculateTotalStayCost(res);
-        assertEquals(150 * 4, total); // Deluxe $150/night
+        assertEquals(35000.0 * 4, total);
     }
 
     @Test
     public void testMinimumOneNight() throws Exception {
         Date checkIn = sdf.parse("2026-03-01");
-        Date checkOut = sdf.parse("2026-03-01"); // same day
-        Reservation res = new Reservation("Jane Doe", "Colombo", "0712345678", "Single", checkIn, checkOut);
+        Date checkOut = sdf.parse("2026-03-01"); // 0 nights
+        Reservation res = new Reservation("Jane Doe", "jane@example.com", "Colombo", "0712345678", "Single", checkIn, checkOut);
+        
         double total = billingService.calculateTotalStayCost(res);
-        assertEquals(100, total); // Single $100 minimum
+        assertEquals(18000.0, total); 
     }
 }

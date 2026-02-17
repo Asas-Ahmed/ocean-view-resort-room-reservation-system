@@ -5,6 +5,7 @@ import java.util.Date;
 public class Reservation {
     private int reservationId;
     private String guestName;
+    private String guestEmail;
     private String address;
     private String contactNumber;
     private String roomType;
@@ -13,10 +14,10 @@ public class Reservation {
 
     public Reservation() {}
 
-    // Constructor without ID
-    public Reservation(String guestName, String address, String contactNumber,
-                       String roomType, Date checkInDate, Date checkOutDate) {
+    // Constructor for NEW reservations
+    public Reservation(String guestName, String guestEmail, String address, String contactNumber, String roomType, Date checkInDate, Date checkOutDate) {
         this.guestName = guestName;
+        this.guestEmail = guestEmail;
         this.address = address;
         this.contactNumber = contactNumber;
         this.roomType = roomType;
@@ -24,22 +25,28 @@ public class Reservation {
         this.checkOutDate = checkOutDate;
     }
 
-    // Constructor with ID
-    public Reservation(int reservationId, String guestName, String address, String contactNumber,
-                       String roomType, Date checkInDate, Date checkOutDate) {
-        this(guestName, address, contactNumber, roomType, checkInDate, checkOutDate);
+    // Constructor for EXISTING reservations
+    public Reservation(int reservationId, String guestName, String guestEmail, String address, String contactNumber, String roomType, Date checkInDate, Date checkOutDate) {
         this.reservationId = reservationId;
+        this.guestName = guestName;
+        this.guestEmail = guestEmail;
+        this.address = address;
+        this.contactNumber = contactNumber;
+        this.roomType = roomType;
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
     }
 
-    public String getFormattedReservationId() {
-        return "RES-" + String.format("%05d", this.reservationId);
-    }
-
-    // Getters and Setters...
+    // Getters and Setters
     public int getReservationId() { return reservationId; }
     public void setReservationId(int reservationId) { this.reservationId = reservationId; }
+    public String getFormattedReservationId() {
+        return String.format("RES-%04d", this.reservationId);
+    }
     public String getGuestName() { return guestName; }
     public void setGuestName(String guestName) { this.guestName = guestName; }
+    public String getGuestEmail() { return guestEmail; }
+    public void setGuestEmail(String guestEmail) { this.guestEmail = guestEmail; }
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
     public String getContactNumber() { return contactNumber; }

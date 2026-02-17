@@ -8,19 +8,29 @@ import java.util.List;
 
 public class ReservationDAO implements IReservationDAO {
 
-    public boolean addReservation(Reservation res) throws Exception {
-        String sql = "INSERT INTO reservations (guest_name, address, contact_number, room_type, check_in, check_out) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, res.getGuestName());
-            ps.setString(2, res.getAddress());
-            ps.setString(3, res.getContactNumber());
-            ps.setString(4, res.getRoomType());
-            ps.setDate(5, new java.sql.Date(res.getCheckInDate().getTime()));
-            ps.setDate(6, new java.sql.Date(res.getCheckOutDate().getTime()));
-            return ps.executeUpdate() > 0;
-        }
-    }
+	@Override
+	public int addReservation(Reservation res) throws Exception {
+	    String sql = "INSERT INTO reservations (guest_name, guest_email, address, contact_number, room_type, check_in, check_out) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	    try (Connection con = DBConnection.getInstance().getConnection(); 
+	         PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+	        
+	        ps.setString(1, res.getGuestName());
+	        ps.setString(2, res.getGuestEmail());
+	        ps.setString(3, res.getAddress());
+	        ps.setString(4, res.getContactNumber());
+	        ps.setString(5, res.getRoomType());
+	        ps.setDate(6, new java.sql.Date(res.getCheckInDate().getTime()));
+	        ps.setDate(7, new java.sql.Date(res.getCheckOutDate().getTime()));
+	        
+	        ps.executeUpdate();
+	        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	                return generatedKeys.getInt(1);
+	            }
+	        }
+	        return -1; 
+	    }
+	}
 
     public boolean deleteReservation(int id) throws Exception {
         String sql = "DELETE FROM reservations WHERE reservation_id = ?";
@@ -32,16 +42,16 @@ public class ReservationDAO implements IReservationDAO {
     }
 
     public boolean updateReservation(Reservation res) throws Exception {
-        String sql = "UPDATE reservations SET guest_name=?, address=?, contact_number=?, room_type=?, check_in=?, check_out=? WHERE reservation_id=?";
-        try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        String sql = "UPDATE reservations SET guest_name=?, guest_email=?, address=?, contact_number=?, room_type=?, check_in=?, check_out=? WHERE reservation_id=?";
+        try (Connection con = DBConnection.getInstance().getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, res.getGuestName());
-            ps.setString(2, res.getAddress());
-            ps.setString(3, res.getContactNumber());
-            ps.setString(4, res.getRoomType());
-            ps.setDate(5, new java.sql.Date(res.getCheckInDate().getTime()));
-            ps.setDate(6, new java.sql.Date(res.getCheckOutDate().getTime()));
-            ps.setInt(7, res.getReservationId());
+            ps.setString(2, res.getGuestEmail());
+            ps.setString(3, res.getAddress());
+            ps.setString(4, res.getContactNumber());
+            ps.setString(5, res.getRoomType());
+            ps.setDate(6, new java.sql.Date(res.getCheckInDate().getTime()));
+            ps.setDate(7, new java.sql.Date(res.getCheckOutDate().getTime()));
+            ps.setInt(8, res.getReservationId());
             return ps.executeUpdate() > 0;
         }
     }
@@ -54,7 +64,7 @@ public class ReservationDAO implements IReservationDAO {
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 list.add(new Reservation(
-                    rs.getInt("reservation_id"), rs.getString("guest_name"),
+                    rs.getInt("reservation_id"), rs.getString("guest_name"), rs.getString("guest_email"),
                     rs.getString("address"), rs.getString("contact_number"),
                     rs.getString("room_type"), rs.getDate("check_in"), rs.getDate("check_out")
                 ));
@@ -70,11 +80,16 @@ public class ReservationDAO implements IReservationDAO {
             ps.setInt(1, reservationId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new Reservation(
-                        rs.getInt("reservation_id"), rs.getString("guest_name"),
-                        rs.getString("address"), rs.getString("contact_number"),
-                        rs.getString("room_type"), rs.getDate("check_in"), rs.getDate("check_out")
-                    );
+                	return new Reservation(
+            		    rs.getInt("reservation_id"),
+            		    rs.getString("guest_name"),
+            		    rs.getString("guest_email"),
+            		    rs.getString("address"),
+            		    rs.getString("contact_number"),
+            		    rs.getString("room_type"),
+            		    rs.getDate("check_in"),
+            		    rs.getDate("check_out")
+            		);
                 }
             }
         }
@@ -111,7 +126,7 @@ public class ReservationDAO implements IReservationDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(new Reservation(
-                        rs.getInt("reservation_id"), rs.getString("guest_name"),
+                        rs.getInt("reservation_id"), rs.getString("guest_name"), rs.getString("guest_email"),
                         rs.getString("address"), rs.getString("contact_number"),
                         rs.getString("room_type"), rs.getDate("check_in"), rs.getDate("check_out")
                     ));

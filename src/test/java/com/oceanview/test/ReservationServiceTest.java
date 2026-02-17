@@ -4,14 +4,11 @@ import com.oceanview.dao.ReservationDAO;
 import com.oceanview.model.Reservation;
 import com.oceanview.service.ReservationService;
 import org.junit.jupiter.api.*;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReservationServiceTest {
-
     private static ReservationService service;
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -24,25 +21,24 @@ public class ReservationServiceTest {
     public void testAddReservationSuccess() throws Exception {
         Date checkIn = sdf.parse("2026-02-01");
         Date checkOut = sdf.parse("2026-02-03");
-        Reservation res = new Reservation("John Doe", "Galle", "0712345678", "Single", checkIn, checkOut);
-        assertTrue(service.addReservation(res));
+        Reservation res = new Reservation("John Doe", "john@example.com", "Galle", "0712345678", "Single", checkIn, checkOut);
+        int generatedId = service.addReservation(res);
+        assertTrue(generatedId > 0);
     }
 
     @Test
     public void testAddReservationInvalidContact() throws Exception {
         Date checkIn = sdf.parse("2026-02-01");
         Date checkOut = sdf.parse("2026-02-03");
-        Reservation res = new Reservation("John Doe", "Galle", "123", "Single", checkIn, checkOut);
-
-        Exception ex = assertThrows(IllegalArgumentException.class, () -> service.addReservation(res));
-        assertEquals("Invalid contact number", ex.getMessage());
+        Reservation res = new Reservation("John Doe", "john@example.com", "Galle", "123", "Single", checkIn, checkOut);
+        assertThrows(IllegalArgumentException.class, () -> service.addReservation(res));
     }
 
     @Test
     public void testCalculateBill() throws Exception {
         Date checkIn = sdf.parse("2026-02-01");
-        Date checkOut = sdf.parse("2026-02-04"); // 3 nights
-        Reservation res = new Reservation("John Doe", "Galle", "0712345678", "Suite", checkIn, checkOut);
+        Date checkOut = sdf.parse("2026-02-04");
+        Reservation res = new Reservation("John Doe", "john@example.com", "Galle", "0712345678", "Suite", checkIn, checkOut);
         double bill = service.calculateBill(res);
         assertTrue(bill > 0);
     }

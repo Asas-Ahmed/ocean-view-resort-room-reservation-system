@@ -18,13 +18,18 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	
-        /* // ONE-TIME RUN BLOCK (Disabled now that DB is populated)
-    	if (userDAO.getUserByUsername("admin") == null) {
-            userDAO.addUser(new User("admin", "admin123", "ADMIN"));
-        }
-        if (userDAO.getUserByUsername("staff1") == null) {
-            userDAO.addUser(new User("staff1", "password123", "STAFF"));
-        }
+        /* // ONE-TIME RUN BLOCK
+	    try {
+			// Inside LoginServlet.java
+			if (userDAO.getUserByUsername("admin") == null) {
+			    userDAO.addUser(new User("admin", "admin123", "ADMIN")); 
+			}
+			if (userDAO.getUserByUsername("staff1") == null) {
+			    userDAO.addUser(new User("staff1", "password123", "STAFF"));
+			}
+	    } catch (Exception e) {
+	        e.printStackTrace(); 
+	    }
         */
     	
         String username = req.getParameter("username");
