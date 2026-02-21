@@ -1,12 +1,9 @@
-package com.oceanview.test;
+package com.oceanview.service;
 
 import com.oceanview.model.Reservation;
-import com.oceanview.service.BillingService;
 import org.junit.jupiter.api.*;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BillingServiceTest {

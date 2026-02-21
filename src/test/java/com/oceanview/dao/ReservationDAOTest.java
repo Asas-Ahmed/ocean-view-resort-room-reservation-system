@@ -1,6 +1,5 @@
-package com.oceanview.test;
+package com.oceanview.dao;
 
-import com.oceanview.dao.ReservationDAO;
 import com.oceanview.model.Reservation;
 import org.junit.jupiter.api.*;
 import java.text.SimpleDateFormat;
