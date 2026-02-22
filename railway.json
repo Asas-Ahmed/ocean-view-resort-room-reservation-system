@@ -8,4 +8,4 @@
     "startCommand": "java -jar target/*.war",
     "restartPolicyType": "ON_FAILURE"
   }
-}
+} 
