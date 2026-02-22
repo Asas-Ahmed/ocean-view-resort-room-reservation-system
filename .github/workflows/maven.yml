@@ -40,12 +40,21 @@ jobs:
 
     - name: Initialize Database
       run: |
+        until mysqladmin ping -h 127.0.0.1 --silent; do
+          echo "Waiting for MySQL..."
+          sleep 2
+        done
         mysql -h 127.0.0.1 -u root -proot ocean_view_resort_db < database/ocean_view_resort.sql
-      
+    
     - name: Build with Maven
-      run: mvn -B package -DskipTests=false --file pom.xml
+      run: |
+        mvn -B package \
+        -Ddb.url="jdbc:mysql://127.0.0.1:3306/ocean_view_resort_db?useSSL=false" \
+        -Ddb.user="root" \
+        -Ddb.password="root" \
+        --file pom.xml
       env:
-        DB_URL: jdbc:mysql://127.0.0.1:3306/ocean_view_resort_db?allowPublicKeyRetrieval=true&useSSL=false
+        DB_URL: jdbc:mysql://127.0.0.1:3306/ocean_view_resort_db?useSSL=false
         DB_USER: root
         DB_PASSWORD: root
 
