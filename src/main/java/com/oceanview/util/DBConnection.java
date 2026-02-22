@@ -6,12 +6,18 @@ import java.sql.SQLException;
 
 public class DBConnection {
     private static DBConnection instance;
-    // Singleton connection; use HikariCP for production pooling.
     private Connection connection;
     
-    private final String URL = "jdbc:mysql://localhost:3306/ocean_view_resort_db";
-    private final String USER = "root";
-    private final String PASSWORD = "1H8U@g$&%Y#dg.22As,";
+    // SMART CONFIGURATION: Checks Environment Variables first (for GitHub Actions)
+    // If not found, falls back to your local settings.
+    private final String URL = System.getenv("DB_URL") != null ? 
+                        System.getenv("DB_URL") : "jdbc:mysql://localhost:3306/ocean_view_resort_db";
+    
+    private final String USER = System.getenv("DB_USER") != null ? 
+                         System.getenv("DB_USER") : "root";
+    
+    private final String PASSWORD = System.getenv("DB_PASSWORD") != null ? 
+                             System.getenv("DB_PASSWORD") : "1H8U@g$&%Y#dg.22As,";
 
     private DBConnection() throws SQLException {
         try {
@@ -27,7 +33,6 @@ public class DBConnection {
         return connection;
     }
 
-    // Singleton pattern ensures only one connection instance exists
     public static DBConnection getInstance() throws SQLException {
         if (instance == null) {
             instance = new DBConnection();
