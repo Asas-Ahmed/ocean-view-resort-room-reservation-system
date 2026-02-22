@@ -32,6 +32,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
+          --default-authentication-plugin=mysql_native_password
     
     steps:
     - uses: actions/checkout@v4
@@ -47,9 +48,9 @@ jobs:
         mysql -h 127.0.0.1 -u root -proot ocean_view_resort_db < database/ocean_view_resort.sql
       
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B package -DskipTests=false --file pom.xml
       env:
-        DB_URL: jdbc:mysql://127.0.0.1:3306/ocean_view_resort_db
+        DB_URL: jdbc:mysql://127.0.0.1:3306/ocean_view_resort_db?allowPublicKeyRetrieval=true&useSSL=false
         DB_USER: root
         DB_PASSWORD: root
 
