@@ -86,6 +86,12 @@
 		    <artifactId>jakarta.mail</artifactId>
 		    <version>2.0.2</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.github.librepdf</groupId>
+		    <artifactId>openpdf</artifactId>
+		    <version>2.0.3</version>
+		</dependency>
 	</dependencies>
     <build>
         <finalName>ocean-view-resort</finalName>

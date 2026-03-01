@@ -691,7 +691,7 @@ body:not(.is-loading) .dashboard-content {
 
 /* --- Number Input --- */
 .input-modern {
-    width: 90px;
+    width: 170px;
     padding: 10px 12px;
     font-size: 0.95rem;
     font-weight: 600;

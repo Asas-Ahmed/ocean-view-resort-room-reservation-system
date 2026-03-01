@@ -11,4 +11,5 @@ public interface IReservationDAO {
     int getTotalReservationsCount() throws Exception;
     int getArrivalsTodayCount() throws Exception;
     List<Reservation> searchReservations(String query) throws Exception;
+    List<Reservation> getReservationsByRange(String startDate, String endDate) throws Exception;
 }

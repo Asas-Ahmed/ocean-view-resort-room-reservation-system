@@ -135,4 +135,26 @@ public class ReservationDAO implements IReservationDAO {
         }
         return list;
     }
+    
+    @Override
+    public List<Reservation> getReservationsByRange(String startDate, String endDate) throws Exception {
+        List<Reservation> list = new ArrayList<>();
+        String sql = "SELECT * FROM reservations WHERE check_in BETWEEN ? AND ? ORDER BY check_in DESC";
+        try (Connection con = DBConnection.getInstance().getConnection(); 
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, startDate);
+            ps.setString(2, endDate);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Reservation(
+                        rs.getInt("reservation_id"), rs.getString("guest_name"),
+                        rs.getString("guest_email"), rs.getString("address"),
+                        rs.getString("contact_number"), rs.getString("room_type"),
+                        rs.getDate("check_in"), rs.getDate("check_out")
+                    ));
+                }
+            }
+        }
+        return list;
+    }
 }
