@@ -157,4 +157,44 @@ public class ReservationDAO implements IReservationDAO {
         }
         return list;
     }
+    
+    // Counts reservations based on the room category
+    public int getCountByRoomType(String roomType) throws Exception {
+        String sql = "SELECT COUNT(*) FROM reservations WHERE room_type = ?";
+        try (Connection con = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, roomType);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
+    // Calculates a 7-day revenue trend for the line chart
+    public List<Double> getRevenueTrend() throws Exception {
+        List<Double> trend = new ArrayList<>();
+        String sql = "SELECT SUM(CASE " +
+                     "WHEN room_type = 'Standard' THEN 100 " +
+                     "WHEN room_type = 'Deluxe' THEN 200 " +
+                     "WHEN room_type = 'Suite' THEN 500 ELSE 0 END) as daily_rev " +
+                     "FROM reservations WHERE check_in = ?";
+        
+        try (Connection con = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            // Loop for the next 7 days
+            for (int i = 0; i < 7; i++) {
+                ps.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now().plusDays(i)));
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        trend.add(rs.getDouble("daily_rev"));
+                    } else {
+                        trend.add(0.0);
+                    }
+                }
+            }
+        }
+        return trend;
+    }
 }

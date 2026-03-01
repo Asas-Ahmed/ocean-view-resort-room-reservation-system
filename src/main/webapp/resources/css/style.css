@@ -2033,3 +2033,43 @@ body:not(.is-loading) .dashboard-content {
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(225, 29, 72, 0.3) !important;
 }
+
+/* --- DASHBOARD CHART --- */
+.stat-card-v2 {
+     background: var(--bg-card);
+     border-radius: var(--radius-lg);
+     border: 1px solid var(--border-soft);
+     position: relative;
+     padding: 1.5rem;
+     transition: var(--transition-smooth);
+     box-shadow: var(--shadow-sm);
+ }
+
+ [data-theme="dark"] .stat-card-v2 {
+     background: #1e1e22;
+     border-color: #27272a;
+ }
+
+ .chart-overlay {
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     text-align: center;
+     pointer-events: none;
+ }
+
+ .chart-overlay .percentage {
+     display: block;
+     font-size: 1.6rem;
+     font-weight: 800;
+     color: var(--text-heading);
+     line-height: 1;
+ }
+
+ .chart-overlay .label {
+     font-size: 0.65rem;
+     color: var(--text-muted);
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+ }

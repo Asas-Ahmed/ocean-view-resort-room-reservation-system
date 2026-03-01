@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/system/dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -29,7 +30,18 @@ public class DashboardServlet extends HttpServlet {
             int arrivalsToday = reservationDAO.getArrivalsTodayCount();
             int totalCapacity = settingsDAO.getTotalCapacity(); 
             int availableRooms = totalCapacity - totalRes;
+            int standardCount = reservationDAO.getCountByRoomType("Standard");
+            int deluxeCount = reservationDAO.getCountByRoomType("Deluxe");
+            int suiteCount = reservationDAO.getCountByRoomType("Suite");
+            List<Double> revenueTrend = reservationDAO.getRevenueTrend();
+            double projectedRevenue = (standardCount * 100) + (deluxeCount * 200) + (suiteCount * 500);
 
+            request.setAttribute("revenueData", revenueTrend);
+            request.setAttribute("stdCount", standardCount);
+            request.setAttribute("dlxCount", deluxeCount);
+            request.setAttribute("steCount", suiteCount);
+            request.setAttribute("revenue", projectedRevenue);
+            
             request.setAttribute("totalRes", totalRes);
             request.setAttribute("arrivalsToday", arrivalsToday);
             request.setAttribute("totalCapacity", totalCapacity); 
