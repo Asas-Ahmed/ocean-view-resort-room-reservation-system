@@ -98,27 +98,29 @@
         </div>
     </header>
     
-    <div style="background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid var(--border-soft);">
-	    <h4 style="margin-bottom: 1rem; color: var(--text-heading);">Export Reports</h4>
-	    <form action="${pageContext.request.contextPath}/system/export" method="GET" style="display: flex; gap: 15px; align-items: flex-end;">
-	        <div>
-	            <label style="font-size: 0.75rem; display: block; margin-bottom: 5px;">Start Date</label>
-	            <input type="date" name="startDate" class="input-modern" required>
-	        </div>
-	        <div>
-	            <label style="font-size: 0.75rem; display: block; margin-bottom: 5px;">End Date</label>
-	            <input type="date" name="endDate" class="input-modern" required>
-	        </div>
-	        <div>
-	            <label style="font-size: 0.75rem; display: block; margin-bottom: 5px;">Format</label>
-	            <select name="format" class="input-modern">
-	                <option value="pdf">Professional PDF</option>
-	                <option value="csv">Excel / CSV</option>
-	            </select>
-	        </div>
-	        <button type="submit" class="btn btn-primary">Download Report</button>
-	    </form>
-	</div>
+    <c:if test="${sessionScope.user.role == 'ADMIN'}">
+	    <div style="background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid var(--border-soft);">
+		    <h4 style="margin-bottom: 1rem; color: var(--text-heading);">Export Reports</h4>
+		    <form action="${pageContext.request.contextPath}/system/export" method="GET" style="display: flex; gap: 15px; align-items: flex-end;">
+		        <div>
+		            <label style="font-size: 0.75rem; display: block; margin-bottom: 5px;">Start Date</label>
+		            <input type="date" name="startDate" class="input-modern" required>
+		        </div>
+		        <div>
+		            <label style="font-size: 0.75rem; display: block; margin-bottom: 5px;">End Date</label>
+		            <input type="date" name="endDate" class="input-modern" required>
+		        </div>
+		        <div>
+		            <label style="font-size: 0.75rem; display: block; margin-bottom: 5px;">Format</label>
+		            <select name="format" class="input-modern">
+		                <option value="pdf">Professional PDF</option>
+		                <option value="csv">Excel / CSV</option>
+		            </select>
+		        </div>
+		        <button type="submit" class="btn btn-primary">Download Report</button>
+		    </form>
+		</div>
+	</c:if>
 
 	<div class="stats-container">
 	    <div class="stat-card">

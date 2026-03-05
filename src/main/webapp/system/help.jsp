@@ -208,6 +208,7 @@
                 <li><a href="#reservations">Guest Registration</a></li>
                 <li><a href="#search">Finding Records</a></li>
                 <li><a href="#billing">Rates & Billing</a></li>
+                <li><a href="#reports">Reports & Analytics</a></li>
                 <li><a href="#config">System Configuration</a></li>
                 <c:if test="${sessionScope.user.role == 'ADMIN'}">
                     <li><a href="#admin">Administration</a></li>
@@ -275,6 +276,41 @@
 			            To <b>Calculate and Print Bill</b>, open the reservation record. The system will multiply the 
 			            Nightly Rate by the number of nights. Use the 'Print' button to generate the guest invoice.
 			        </p>
+			    </div>
+			</section>
+			
+			<section id="reports" class="help-section-card" style="border-left-color: #4f46e5;">
+			    <h2 style="color: #4f46e5;"><i>07</i> Reports & Analytics</h2>
+			    <p>The system now provides comprehensive reporting tools and live dashboard charts to help management monitor operations.</p>
+			
+			    <div class="info-box">
+			        <strong>Export Reports:</strong>
+			        <ul style="margin-top: 8px; margin-left: 15px;">
+			            <li>Available to <b>Admin users</b>.</li>
+			            <li>Reports can be generated for a <b>specific date range</b>.</li>
+			            <li>Export formats supported: <b>PDF</b> (professional layout) or <b>CSV/Excel</b>.</li>
+			            <li>Navigate to <code>Dashboard → Export Reports</code> and select the start date, end date, and format, then click <b>Download Report</b>.</li>
+			        </ul>
+			    </div>
+			
+			    <div class="info-box" style="margin-top: 1rem;">
+			        <strong>Dashboard Graphs:</strong>
+			        <p>Live analytics are displayed directly on the dashboard:</p>
+			        <ul style="margin-left: 15px;">
+			            <li><b>Occupancy Chart:</b> Shows the percentage of currently occupied rooms.</li>
+			            <li><b>Room Type Inventory:</b> Bar chart displaying the distribution of Standard, Deluxe, and Suite rooms.</li>
+			            <li><b>Revenue Trend:</b> Line chart projecting expected revenue for the next 7 days based on confirmed reservations. (Admin Only)</li>
+			        </ul>
+			        <p>Graphs automatically update as new reservations are added or updated.</p>
+			    </div>
+			
+			    <div class="info-box" style="margin-top: 1rem;">
+			        <strong>Tips:</strong>
+			        <ul style="margin-left: 15px;">
+			            <li>Use the charts to make staffing and inventory decisions quickly.</li>
+			            <li>Exported reports are useful for management meetings and auditing purposes.</li>
+			            <li>Graphs and reports maintain real-time accuracy when data changes in the system.</li>
+			        </ul>
 			    </div>
 			</section>
 
